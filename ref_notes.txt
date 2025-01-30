@@ -1,0 +1,69 @@
+Examples for Coding
+
+IMAGE
+    <img src="elec_code/2_inside_view.png" width="500" alt="inside view">
+
+VIDEO
+    <video width="500" controls>
+        <source src="v1mech/3_satisfying_wood_chip.mov">
+    </video>
+
+    <iframe width="500" height="281" src="https://youtu.be/0pYUt2mtMTw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+
+HYPERLINK
+    <a href="https://jlhansen9.github.io/PS70/weeks/week1/1.html">ideating</a>
+
+ARDUINO SKETCH
+    <iframe src="https://app.arduino.cc/sketches/2ce3cb42-7dfd-4930-a417-f20a26667038?view-mode=embed" style="height:510px;width:100%;margin:10px 0" frameborder=0></iframe>
+
+
+ORDERED LIST
+    <ol>
+        <li> </li>
+        <li> </li>
+        <li> </li>
+        <li> </li>
+    </ol>
+
+UNORDERED LIST
+    <ul>
+        <li> </li>
+        <li> </li>
+        <li> </li>
+        <li> </li>
+    </ul>
+
+DOWNLOAD LINK
+    <a download href='elec_code/three_servos/three_servos.ino'>here</a>
+
+
+
+
+IMAGE CAROUSEL
+    <div class="carousel" id="photoCarousel">
+        <img src="elec_code/corner_view_button.jpg" alt="corner view">
+        <img src="elec_code/side_view_button.jpg" alt="side view">
+
+    </div>
+
+    <script>
+        // JavaScript for the carousel
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('#photoCarousel img');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides[currentSlide].style.display = 'none';
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].style.display = 'block';
+        }
+
+        // Initial slide display
+        showSlide(currentSlide);
+
+        // Auto-advance the carousel (you can adjust the interval as needed)
+        setInterval(() => {
+            showSlide(currentSlide + 1);
+        }, 3000); // 3000 milliseconds (3 seconds)
+    </script>

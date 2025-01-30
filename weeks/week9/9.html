@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>week 9 of ps70 with jim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"> 
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+</head>
+
+<body bgcolor=#000000>
+  
+    <div>
+    <pre>
+<a href="https://jlhansen9.github.io/PS70/">back to home</a> 
+    </pre>
+  </div>
+
+  <div>
+    <pre>
+/week 9: radio, wifi, bluetooth (IoT)
+    </pre>
+  </div>
+
+  <p>
+    I teamed up with Jack Schwab for this week's assignment. We joined forces because our final projects were complimentary. Jack is working on a Hall Effect sensor to read rotations of a motor, like a crank. I'm working on audio and already had code for connecting to an online radio station. 
+  </p>
+  
+<p>
+  What do you get with a Hall Effect sensor and a radio station? A gramophone!
+</p>
+
+<p>
+  We wired a speaker and amplifier through a horn, placed a Hall Effect sensor on the bottom of a small board and had a crank with magnets attached that could be spun to pass the sensor. We had our ESP32 and a L9110 amplifier.
+</p>
+
+<p>
+  <img src="week9/gramophone_1.png" width="500" alt="top view">
+  <img src="week9/gramophone_2.png" width="500" alt="side view">
+</p>
+
+<p>
+  Each rotation triggered audio to be played for a short duration of 1 second. We wanted to make you work hard for that music! You need to keep rotating the crank to play sound.
+</p>
+
+<p>
+  <iframe src="https://app.arduino.cc/sketches/f6934960-4d0d-4007-b2a8-7f8a53ca82bb" style="height:510px;width:100%;margin:10px 0" frameborder=0></iframe>
+</p>
+
+<p>
+  <video width="500" controls>
+    <source src="week9/gramophone.mov">
+</video>
+</p>
+
+<p>
+  We ran out of time polishing off the housing but got everything working satisfactorily.
+</p>
+
+<p>
+  Some last thoughts, we tried using a Gramophone model from <a href="https://www.thingiverse.com/thing:2805415">Thingiverse</a> that looked really good but turned out to be really difficult to edit and work with. Was an STL but we needed more editable features. Would have been best to build our own model to our needs.
+</p>
+
+<a href="https://www.thingiverse.com/thing:2805415">Thingiverse</a>
+
+
+</body>
+
+<link rel="stylesheet" href="../../style.css">
+
+</html>

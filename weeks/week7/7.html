@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>PS70: Intro to Digital Fabrication</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"> 
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+</head>
+
+<body bgcolor=#000000>
+  
+    <div>
+    <pre>
+<a href="https://jlhansen9.github.io/PS70/">back to home</a> 
+    </pre>
+  </div>
+
+  <div>
+    <pre>
+/ Final Project MVP: Progress
+    </pre>
+  </div>
+  
+<p>
+  I am continuing with my final project idea of a music box that records sound using a microphone and processes it converting into music that can be listened to through headphones.
+</p>
+
+<p>My goal for an MVP is to have a microphone, potentiometer and a speaker (output) all on one breadboard. This represents the basic circuitry I need, taking audio in, processing and then producing an audio out. I expect the circuitry to be straightforward and the software to be the most challenging aspect of this project.</p>
+
+
+<p>
+  I upgraded from an Arduino Uno to an ESP-WROOM-32 which has a better Digital Audio Converter than the Uno. I also upgraded to an INMP441 I2S Microphone, with better sound quality.
+</p>
+
+<p><img src="elec_code/upgrade_mic_esp32.png" width="500" alt="upgrades"></p>
+
+<p>
+  This week represents my third attempt at using I2S and relying less and less on prewritten examples. With Bobby's unwavering support, we are realising the limitations of libraries for customisation and achieving what I am aiming for. It will require using I2S more from first principles instead of libraries, of which there are many (<a href="https://github.com/schreibfaul1">@schreibfaul1</a> , in particular)
+</p>
+
+<p>
+  The most useful example explanation and set of introductory examples has been <a href="https://dronebotworkshop.com/esp32-i2s/">Drone Bot Workshop</a> . This page covers the basics of I2S, microphones, potentiometers, speakers and online WiFi streaming. The code in these examples was the basis for what I was then trying to merge to have the microphone, potentiometer and speaker working together.
+</p>
+
+<p>
+  I successfully got the microphone working on its own. Then I got the potentiometer and speaker working on their own. But then I couldn't do all three *shakes fist at sky*
+</p>
+
+<p>
+  <img src="week7/circuit_esp32_mic_potentiometer_speaker.png" width="500" alt="inside view">
+</p>
+
+<p>Here is the code for the microphone:</p>
+<iframe src="hhttps://app.arduino.cc/sketches/83740339-c6ff-47e6-a341-ac6ef81d0bb5" style="height:510px;width:100%;margin:10px 0" frameborder=0></iframe>
+
+
+<p>Here is the Speaker and Potentiometer Code playing radio over WiFi:
+<iframe src="https://app.arduino.cc/sketches/d64403a7-c79d-4bae-827b-87cfc37f4189" style="height:510px;width:100%;margin:10px 0" frameborder=0></iframe>
+</p>
+
+<p>Next steps are to continue working on the coding. I will order an audio jack for connecting headphones. Bobby suspects we will need to stop using libraries and rely on just the I2S driver.  Entering uncharted territory that neither he or Nathan has tried before...
+</p>
+
+</body>
+
+<link rel="stylesheet" href="../../style.css">
+
+</html>

@@ -1,0 +1,20 @@
+Kinetic Sculpture - With AUDIO
+
+
+This week was a continuation of my kinetic sculpture from last week. My Alexander Calder inspired mobile, was now ready for a microcontroller.
+
+In anticipation of my final project, I wanted to start to play with audio. The idea for this week was based on the ballerina music box, also taking a cue from Katie Merriam's kinetic sculpture. I wanted audio to play and a microphone to start the motor.
+
+?Another reference project?
+
+This week we had the L9110 H Bridge Power Driver and an Arduino Uno. I wanted to add the Adafruit MEMS Microphone Breakout SPW2430 to receive an audio signal and Digital Write to initiate the motor.
+
+[Photo of Breadboard]
+
+[Schematic of Circuit]
+
+[Include CODE]
+
+[Include Video of Responding to Sound]
+
+Thanks to Bobby. That boy is going places.

@@ -1,0 +1,19 @@
+Kinetic Sculpture
+
+My kinetic sculpture started with inspiration from Alexander Calder. An American sculptor known for his mobiles (kinetic) and immobile (static) sculptures often made of steel. I wanted to do a version of his work but adding a motor to generate the movement. Calder's work was never motorised but was balanced such that it could swivel passively.
+
+[Photo Examples]
+
+I wanted to replicate the animal like shapes, with legs, torso and neck. Sprouting from the neck would be a set of metal wires hanging like Calder's mobiles but attached to a motor.
+
+I made a first attempt using cardboard cut on the laser cutter to get a sense of shape and how to join two pieces together. I also printed my first set of gears using the SpurGear add-in within Fusion, for translating rotation from a vertical plane of rotation to a horizontal plane. For this version, I just wanted to use a laser cutter for creating the parts.
+
+Cardboard (and some hot glue) proved to be too weak to hold the motor and to drive the gears. However, it was a valuable first prototype to measure out geometry, test the limitations of cardboard as a material and identify mistakes in my 3D model.
+
+[Photo of Cardboard Kinetic Sculpture]
+
+My second attempt used wood for the legs and the gear, having much more success. I creeped ahead in weeks and decided to 3D print a small housing for the motor so it could be securely attached to the torso and neck panel. Ended up looking like a little saddle. This included holes for screws to attach the motor. I used a ball bearing and some hot glue to fit a screw that could then rotate. This screw held the wires that then could be rotated.
+
+[Completed Sculpture Photos]
+
+[ GIF OF SPINNING WITH MOTOR ]  

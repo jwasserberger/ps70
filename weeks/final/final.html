@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>a machine that makes noise musical</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"> 
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+</head>
+
+<body bgcolor=#000000>
+  
+  <div>
+    <pre>
+      <a href="https://jlhansen9.github.io/PS70/">back to home</a> 
+    </pre>
+  </div>
+
+  <div>
+    <pre> /final project: the music box </pre>
+  </div>
+
+
+<div>
+  <pre style="color:gray"> # contents </pre>
+  <pre style="color:gray"> # --------------------------------- </pre>
+  <pre>one.    <a href="#section1">the final product</a> </pre>
+  <pre>two.    <a href="#section2">circuitry</a>  </pre>
+  <pre>three.  <a href="#section3">housing</a>  </pre>
+  <pre>four.   <a href="#section4">coding</a> </pre>
+  <pre>five.   <a href="#section5">next steps</a> </pre>
+</div>
+
+<div id="section1">
+    <pre style="color:gray">
+# the final product
+    </pre>
+    <pre style="color:gray">
+# ---------------------------------
+  </pre>
+<p>
+before i dive into my process of <a href="https://jlhansen9.github.io/PS70/weeks/week1/1.html">ideating</a>, designing, building, coding, wiring, soldering, printing, cutting, and so on, here is the demo video for my final project.  
+</p> 
+
+<video width="500" controls>
+  <source src="product/The_Music_Box.mov">
+</video>
+
+<p>
+  As shown in the <a href="https://youtu.be/0pYUt2mtMTw">video</a>, for my final project I built a device that helps you focus while studying by taking distracting ambient noise and converting into listenable, calming music. The system is generative, continuously recording audio, processing it and then playing it out through headphones.
+</p>
+
+<p>
+  I work in a noisy office space so often rely on headphones to block out sound. While I love to listen to music, often the music itself is distracting. I wanted to find a balanced middle ground that filtered out the noise but focused me on my work, instead of distracting me.
+</p>
+
+<p><img src="product/fair_day_setup.png" width="500" alt="inside view"></p>
+
+</div>
+
+<div id="section2">
+    <pre style="color:gray">
+# circuitry
+    </pre>
+    <pre style="color:gray">
+# ---------------------------------
+  </pre>
+
+<p>
+  bill of materials:
+</p>
+<p>
+  <ul>
+    <li> 1 x ESP-WROOM-32 </li>
+    <li> 1 x INMP441 Microphone </li>
+    <li> 1 x Audio Jack 3.5mm </li>
+    <li> 1 x Potentiometer </li>
+    <li> 1 x 2.8" Dia. TFT Color LCD Display Touch Panel ILI9341 </li>
+    <li> 1 x Adafruit Micro-Lipo Charger for LiPo/LiIon Batt w/MicroUSB Jack - v1 </li>
+    <li> 1 x Li-Ion Rechargeable battery </li>
+    <li> 1 x Headphones with Cord and 3.5mm Jack</li>
+    <li> OPTIONAL: 1 x Slide Switch EG1218 </li>
+  </ul>
+</p>
+<p>
+  The circuitry is fairly simple driven by the ESP-WROOM-32 (ESP32). A rechargeable LiIon battery provides power via the Micro-LiPo Charger, including the optional Slide Switch to act as the power switch. The INMP441 Microphone takes audio in and passes to the Analogue Digital Converter of the ESP32. The ESP32 processes the audio using the I2S protocol (see programming section below). An analogue signal is read from the potentiometer to control audio volume. Then a video feed is generated on the TFT display and audio is sent out to the Audio Jack after passing through the Digital Analogue Converter.
+</p>
+
+<p>
+<img src="circuitry/circuit_chain.png" width="500" alt="input to output chain">
+</p>
+
+<p>
+The current model relies on a breadboard for housing the ESP32 and Micro-LiPo charger.
+</p>
+
+<p>
+  <img src="circuitry/circuit_chain_back.png" width="500" alt="ESP32 and Micro-LiPo charger on breadboard">
+</p>
+
+<p> The TFT display and INMP441 Microphone are then exposed while the circuit board is contained within the housing </p>
+
+<p>
+  <img src="circuitry/assembly.png" width="500" alt="INMP441 and TFT 2.8 inch display">
+  <img src="circuitry/inside_circuitry.png" width="500" alt="ESP32 and Micro-LiPo charger on breadboard">
+</p>
+
+</div>
+
+<div id="section3">
+    <pre style="color:gray">
+# housing
+    </pre>
+    <pre style="color:gray">
+# ---------------------------------
+  </pre>
+  <p>
+    I drew on inspiration from multiple audio devices when designing the housing. To name a few of notable ones from which I appropriated:
+  </p>
+
+  <p>
+    <ul>
+      <li> Braun Portable Radio </li>
+      <li> KEF Speakers </li>
+      <li> Marantz Amplifier </li>
+      <li> Revox MK III Stereo Tape Recorder </li>
+      <li> Moog Little Phatty and </li>
+      <li> Alpha Recording System Music Mixer Pro </li>
+    </ul>
+  </p>
+
+  <p>The housing took many iterations. My initial design was closest to the Braun Portable Radio with a handle that doubled as a stand. After several failed attempts, I abandoned this idea. The reason that my designs kept failing was I pushed the tolerances of the 3D printer (less than 0.2mm) in the size and shape of key rotating connections. My goal was to achieve a slim frame design and thin handle (maximum 5mm), that rotated only 90 degrees and sat flush into the main body of the housing. Even just removing the supports from any slot less than 3mm in diameter to place the handle proved quite difficult.
+  </p>
+
+  <p>
+    <img src="housing/prototypes.png" width="600" alt="inside view">
+  </p>
+
+  <p>
+    Instead I pivoted and chose an inclined front panel. This was easier to print and allowed for simpler customisation of the front panel. I could progress to focusing on how the front and back panels enclosed the circuitry. Affixing the screen, audio jack and knob took several tests to have each part able to withstand pushing and pulling.
+  </p>
+
+  <p>
+    <img src="housing/front_panel_prototypes.png" width="500" alt="inside view">
+  </p>
+
+  <p>
+    The knob was based on the Moog knob design.
+  </p>
+
+  <p>
+    I considered doing a resin print of the final design and then spray painting in a metallic finish, however the black PLA filament looked quite good so I stuck with this for the final form. Adding touches of blue took cues from the KEF speakers and Revox Tape Recorder. 
+  </p>
+
+  <p>
+    <img src="housing/complete.png" width="500" alt="inside view">
+  </p>
+
+</div>
+
+
+
+<div id="section4">
+    <pre style="color:gray">
+# coding
+    </pre>
+    <pre style="color:gray">
+# ---------------------------------
+  </pre>
+
+  <p>
+    The coding was the most challenging aspect of this project and remains the key for advancing this work in the future. The goal was to have all components integrated but I did not succeed in each working in simultaneously before the completion of PS70. Below I have provided the code for each component working independently. 
+  </p>
+
+  <p>
+    The real MVP of this project was Bobby McCarthy whose coding ability was responsible for a lot of the code. I will repeat what I said in my Week 7 update on the importance and value of the Drone Bot Workshop I2S tutorial. My code below is heavily adapted from this.
+  </p>
+
+  <p> ~ audio ~ </p>
+
+  <p>
+  The microphone takes audio samples at a rate of 16000 Hz. They are then converted PWM signal using the I2S protocol. These samples are initially processed with a basic low pass filter and shifted to 8bit integer. They are saved in an array as a circular queue. The size is adjustable depending on the microprocessor's onboard memory. An interrupter function is then used to write the samples to the Digital Audio Converter and be played out through the audio jack.
+  </p>
+
+  <p>
+    The delay function is the first sound effect I added. This is written as a function that takes an audio sample as it is written to the DAC and played it adds the value to the buffer array at a offset in the future and a reduced value (x/3).
+  </p>
+
+<iframe src="https://app.arduino.cc/sketches/0db54f61-e4fb-42db-ae59-afd47d57f7a9" style="height:510px;width:60%;margin:10px 0" frameborder=0></iframe>
+
+<p> ~ video ~ </p>
+<p>The video code is based on examples from the  <a href="https://github.com/Bodmer/TFT_eSPI">TFT_eSPI Library</a>. The meter example has been adapted to show the amplitude of the audio signal using an analogue read from the microphone.</p>
+<iframe src="https://app.arduino.cc/sketches/1bee3247-34ee-440f-a010-7052edf0d6be" style="height:510px;width:60%;margin:10px 0" frameborder=0></iframe>
+
+<p> ~ volume ~ </p>
+<p> The potentiometer code is the same example from the <a href="https://dronebotworkshop.com/esp32-i2s/">Drone Bot Workshop</a> with an alternative radio station. I was not able to fully integrate into the other code.</p>
+<iframe src="https://app.arduino.cc/sketches/869642a4-2eab-4e62-b7d0-43b50eaac186" style="height:510px;width:60%;margin:10px 0" frameborder=0></iframe>
+
+</div>
+
+
+<div id="section5">
+    <pre style="color:gray">
+# next steps
+    </pre>
+    <pre style="color:gray">
+# ---------------------------------
+  </pre>
+
+<p>
+New features I hope to add include sine wave addition to create tones, chords and potentially even a basic synthesiser.
+</p>
+<p>
+I would like to redo circuitry on a protoboard and redo the housing to better accomdate the circuitry. Currently I am worried that if I were to bump or drop the box, everything would break so I would like to strengthen the box and internal wiring.
+</p>
+<p>
+Upgrading the microcontroller to one with a better DAC would also be an interesting next phase, not only improving sound quality but allowing more audio effects that rely on greater resolution in audio information.
+</p>
+
+<p><img src="product/MusicBox_PanHeadphones.gif" width="500" alt="inside view"></p>
+
+
+</div>
+
+<div id="section5">
+  <pre style="color:gray">
+# thank you
+  </pre>
+  <pre style="color:gray">
+# ---------------------------------
+</pre>
+
+<p>
+  Thank you to Nathan, Kassia and Bobby McCarthy for their help throughout this project. Bobby in particular, gave up so much his own time to help me with this project and I am extremely grateful. That man deserves a raise!
+</p>
+
+</div>
+
+</body>
+
+<link rel="stylesheet" href="../../style.css">
+
+</html>
