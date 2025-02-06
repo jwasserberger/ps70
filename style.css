@@ -1,7 +1,7 @@
 body {
     font-family: 'Verdana', monospace;
     line-height: 1.8;
-    color: black;
+    color: white;
     padding-left: 100px;
     padding-top: 100px;
     font-size: 13px;
@@ -18,7 +18,7 @@ li {width: 600px;
   font-size: 13px;
 }
 
-.gray {color: gray}
+.gray {color: white}
 
 pre {
   white-space: 0px;
