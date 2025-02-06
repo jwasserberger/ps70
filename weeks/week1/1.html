@@ -3,53 +3,130 @@
 
 <head>
   <title>ps70 w1 final project ideation</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"> 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
-</head> 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
 
-<body bgcolor=#000000>
-  
-    <div>
-    <pre>
-<a href="https://jwasserberger.github.io/ps70/">back to home</a> 
-    </pre>
+  <style>
+    body {
+      font-family: 'Roboto Mono', monospace;
+      background-color: #000000;
+      color: white;
+      padding: 20px;
+    }
+
+    .typing-container pre span#cursor {
+      border-right: 6px solid white;
+      animation: blink 0.7s steps(2) infinite;
+    }
+
+    /* Blinking wide cursor animation */
+    @keyframes blink {
+      0% {
+        border-color: white;
+      }
+      50% {
+        border-color: transparent;
+      }
+      100% {
+        border-color: white;
+      }
+    }
+
+    a {
+      color: #ff0000;
+      text-decoration: none;
+    }
+
+    .red-text {
+      color: #ff0000;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="typing-container">
+    <pre id="typing-text"><span id="cursor"></span></pre>
   </div>
 
-  <div>
-    <pre>
-/week one: final project ideation and planning
-    </pre>
-  </div>
+  <script>
+    // Content with fixes applied
+    const content = [
+      { type: "link", text: "back to home", href: "https://jwasserberger.github.io/ps70/" },
+      "\n\n",
+      "/week one: final project ideation and planning",
+      "\n\n",
+      { type: "red", text: "# the idea so far..." },
+      "\n",
+      { type: "red", text: "--------------------------------------------------------------------------------" },
+      "\n\n",
+      "1. keyboard w/ pre-loaded templates and contextual understanding\n\n",
+      "- i really, really, really hate writing the same emails over and over again\n\n",
+      "- one of the worst elements of my life, actually\n\n",
+      "- i'm in the recruiting process right now and cannot describe to you the hatred i have for rote email copying\n\n",
+      "- so, i'd like a tool to help me do that\n\n\n",
+      "what i want to build is a keyboard with two main functions.\n\n",
+      "1. i want the \"keyboard\" to be able to receive manually inputted templates, so the user could hit a single key and an entire piece of text would appear.\n",
+      "this is the simple version, and pretty straightforward to do—just a bunch of advanced macros (or at least the same line of thinking).\n\n",
+      "2. eventually, if i'm smart enough, i'd like the keyboard to be able to understand contextually what someone is typing, and autofill the rest.\n",
+      "for example, if the keyboard detects the word \"internship,\" \"summer 2026,\" or \"offer,\" it knows it's probably something recruiting related and has a bunch of templates ready to go.\n\n",
+      "2a. ideally this expands far beyond just emailing but that's the start"
+    ];
 
-  <div>
-<pre style="color:#ff0000">
-# the idea so far...
-    </pre>
-    <pre style="color:#ff0000">
-# --------------------------------------------------------------------------------
-<pre style="color: white">
-  1. keyboard w/ pre-loaded templates and contextual understanding
-</pre>
-<pre style="color: white">
-  - i really, really, really hate writing the same emails over and over again 
+    let index = 0;
+    const typingSpeed = 25;
+    const typingTextElement = document.getElementById("typing-text");
+    const cursor = document.getElementById("cursor");
 
-  - one of the worst elements of my life, actually
+    function typeContent() {
+      if (index < content.length) {
+        const item = content[index];
 
-  - i'm in the recuiting process right now and cannot describe to you the hatred i have for wrote email copying
+        if (typeof item === "string") {
+          typeString(item, 0);
+        } else if (item.type === "link") {
+          const linkElement = document.createElement("a");
+          linkElement.href = item.href;
+          linkElement.className = "red-text";
+          linkElement.textContent = ""; // Start with an empty link
+          typingTextElement.insertBefore(linkElement, cursor);
+          typeStringInElement(linkElement, item.text, 0);
+        } else if (item.type === "red") {
+          const spanElement = document.createElement("span");
+          spanElement.className = "red-text";
+          typingTextElement.insertBefore(spanElement, cursor);
+          typeStringInElement(spanElement, item.text, 0);
+        }
+      }
+    }
 
-  - so, i'd like a tool to help me do that
+    function typeString(str, charIndex) {
+      if (charIndex < str.length) {
+        typingTextElement.insertBefore(document.createTextNode(str.charAt(charIndex)), cursor);
+        setTimeout(() => typeString(str, charIndex + 1), typingSpeed);
+      } else {
+        index++;
+        setTimeout(typeContent, typingSpeed);
+      }
+    }
 
+    function typeStringInElement(element, str, charIndex) {
+      if (charIndex < str.length) {
+        element.textContent += str.charAt(charIndex);
+        setTimeout(() => typeStringInElement(element, str, charIndex + 1), typingSpeed);
+      } else {
+        cursor.style.visibility = "hidden";  // Hide the cursor temporarily
+        index++;
+        typingTextElement.insertBefore(document.createElement("br"), cursor);
+        setTimeout(() => {
+          cursor.style.visibility = "visible";  // Restore the cursor for the next section
+          typeContent();
+        }, typingSpeed);
+      }
+    }
 
-  what i want to build is a keyboard with two main functions. 
-
-    1. i want the "keyboard" to be able to recieve manually inputted templates, so the user could hit a single key and an entire piece of text would appear
-      this is the simple version, and pretty straightforward to do - just a bunch of advanced macros (or at least the same line of thinking)
-
-    2. eventually, if i'm smart enough, i'd like the keyboard to be able to understand contextually what someone is typing, and autofill the rest
-      for example, if the keyboard detects the word "internship," "summer 2026," or "offer," it knows it's probably something recruiting related and has a bunch of templates ready to go.
-
-    2a. ideally this expands far beyond just emailing but that's the start
- </pre>
+    window.onload = typeContent;
+  </script>
+</body>
 
 </html>

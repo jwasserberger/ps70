@@ -3,73 +3,157 @@
 
 <head>
   <title>Jordan Wasserberger</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"> 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Roboto Mono', monospace;
+      background-color: #000000;
+      color: white;
+      padding: 20px;
+    }
+
+    .typing-container pre span#cursor {
+      border-right: 6px solid white;
+      animation: blink 0.7s steps(2) infinite;
+    }
+
+    /* Blinking wide cursor animation */
+    @keyframes blink {
+      0% {
+        border-color: white;
+      }
+      50% {
+        border-color: transparent;
+      }
+      100% {
+        border-color: white;
+      }
+    }
+
+    a {
+      color: #ff0000;
+      text-decoration: none;
+    }
+
+    .red-text {
+      color: #ff0000;
+    }
+
+    .image-placeholder {
+      display: none;
+      width: 800px;
+      background-color: #333;
+      overflow: hidden;
+      position: relative;
+      margin-top: 20px;
+    }
+
+    img {
+      width: 800px;
+      opacity: 0;
+      animation: load-image 3s steps(10) forwards;
+    }
+
+    /* Old-school image chunk loading effect */
+    @keyframes load-image {
+      0% {
+        opacity: 0;
+        clip-path: inset(100% 0 0 0);
+      }
+      100% {
+        opacity: 1;
+        clip-path: inset(0% 0 0 0);
+      }
+    }
+  </style>
 </head>
 
-<body bgcolor=#000000>
-  <div>
-    <pre>
-<a href="https://jwasserberger.github.io/PS70/">back to home</a> 
-    </pre>
+<body>
+  <div class="typing-container">
+    <pre id="typing-text"><span id="cursor"></span></pre>
+    <div class="image-placeholder">
+      <img src="images/skyline.jpg" alt="Old-School Loading Image">
+    </div>
   </div>
 
-  <div>
-    <pre style="color:#ff0000">
-# info
-    </pre>
-    <pre style="color:#ff0000">
---------------------------------------------------------------------------------
-    </pre>
-    <pre>
-name               jordan wasserberger
-    </pre>
-    <pre>
-pronouns           he/him/his
-    </pre>
-    <pre>
-hometown           new york, ny
-    </pre>
-    <pre>
-program            currently studying economics at the college, class of 2027
-    </pre>
-    <pre>
-passion          video games, photography, hockey, and building things
-    </pre>
-  </div>
- 
-  <div>
-    <pre style="color:hsl(0, 100%, 50%)">
-# bio
-    </pre>
-    <pre style="color:#ff0000">
-# --------------------------------------------------------------------------------
-    </pre>
-    <p>
-      i grew up in new york, and have always loved working with my hands and building something, whether it was Legos as a kid or random bits of furniture now.
-      i'm super excited to have the opportunity to dive in and learn a ton about how things fit together and how things work, and hopefully make some pretty cool stuff! outside of that, i'm an extraordinarily passionate hockey fan,
-      i love photography, and my life's dream is to run my own video game studio, which i got started on last year :]
-    </p>
-    <p>
-      my favorite photo i've ever taken
-      <img src="images/skyline.jpg" width="300" class="center">
-    </p>  
-  </div>
+  <script>
+    const content = [
+      { type: "link", text: "back to home", href: "https://jwasserberger.github.io/ps70/" },
+      "\n\n",
+      { type: "red", text: "# info" },
+      "\n",
+      { type: "red", text: "--------------------------------------------------------------------------------" },
+      "\n",
+      "name               jordan wasserberger\n",
+      "pronouns           he/him/his\n",
+      "hometown           new york, ny\n",
+      "program            currently studying economics at the college, class of 2027\n",
+      "passion            video games, photography, hockey, and building things\n\n",
+      "i grew up in new york, and have always loved working with my hands and building something, whether it was Legos as a kid or random bits of furniture now.\n",
+      "i'm super excited to have the opportunity to dive in and learn a ton about how things fit together and how things work, and hopefully make some pretty cool stuff!\n",
+      "outside of that, i'm an extraordinarily passionate hockey fan, i love photography, and my life's dream is to run my own video game studio, which i got started on last year :]\n\n",
+      "my favorite photo i've ever taken\n"
+    ];
 
-  <div>
-    <pre style="color:#ff0000">
-# hong kong, nye, 2024
-    </pre>
-    <pre style="color:#ff0000">
-# --------------------------------------------------------------------------------
-    </pre>
-    <p>
-      this website is largely adapted from the ps70 documentation website created by <a href="https://manas-kulkarnii.github.io/PS70/">manas kulkarnii</a>. 
-    </p>
-  </div>
-  
+    let index = 0;
+    const typingSpeed = 25;
+    const typingTextElement = document.getElementById("typing-text");
+    const cursor = document.getElementById("cursor");
+
+    function typeContent() {
+      if (index < content.length) {
+        const item = content[index];
+
+        if (typeof item === "string") {
+          typeString(item, 0);
+        } else if (item.type === "link") {
+          const linkElement = document.createElement("a");
+          linkElement.href = item.href;
+          linkElement.className = "red-text";
+          typingTextElement.insertBefore(linkElement, cursor);
+          typeStringInElement(linkElement, item.text, 0);
+        } else if (item.type === "red") {
+          const spanElement = document.createElement("span");
+          spanElement.className = "red-text";
+          typingTextElement.insertBefore(spanElement, cursor);
+          typeStringInElement(spanElement, item.text, 0);
+        }
+      } else {
+        document.querySelector(".image-placeholder").style.display = "block";
+      }
+    }
+
+    function typeString(str, charIndex) {
+      if (charIndex < str.length) {
+        typingTextElement.insertBefore(document.createTextNode(str.charAt(charIndex)), cursor);
+        setTimeout(() => typeString(str, charIndex + 1), typingSpeed);
+      } else {
+        index++;
+        setTimeout(typeContent, typingSpeed);
+      }
+    }
+
+    function typeStringInElement(element, str, charIndex) {
+      if (charIndex < str.length) {
+        element.textContent += str.charAt(charIndex);
+        setTimeout(() => typeStringInElement(element, str, charIndex + 1), typingSpeed);
+      } else {
+        // Temporarily hide cursor after red text sections, then restore it
+        cursor.style.visibility = "hidden";  // Hide the cursor
+        index++;
+        typingTextElement.insertBefore(document.createElement("br"), cursor);
+        setTimeout(() => {
+          cursor.style.visibility = "visible";  // Restore cursor for the next section
+          typeContent();
+        }, typingSpeed);
+      }
+    }
+
+    window.onload = typeContent;
+  </script>
 </body>
 
-<link rel="stylesheet" href="style.css">
 </html>

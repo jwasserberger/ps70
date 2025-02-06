@@ -45,6 +45,24 @@ pre code {
   padding: 20px;
 }
 
+.typing-container pre span {
+  border-right: 2px solid white;
+  animation: blink 0.7s steps(2) infinite;
+}
+
+/* Blinking cursor animation */
+@keyframes blink {
+  0% {
+    border-color: white;
+  }
+  50% {
+    border-color: transparent;
+  }
+  100% {
+    border-color: white;
+  }
+}
+
 pre, 
 code,
 kbd,
