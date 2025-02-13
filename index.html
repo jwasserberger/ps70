@@ -67,8 +67,6 @@
       { type: "red", text: "# assignments" },
       "\n",
       { type: "red", text: "--------------------------------------------------------------------------------" },
-      "\n",
-      "week one           ",
       { type: "link", text: "week one", href: "weeks/week1/1.html", subtitle: "final project ideation & planning" },
       "\n",
       { type: "link", text: "week two", href: "weeks/week2/2.html", subtitle: "2D design & cutting" },
@@ -98,51 +96,57 @@
     const cursor = document.getElementById("cursor");
 
     function typeContent() {
-      if (index < content.length) {
-        const item = content[index];
+  if (index >= content.length) return; // Stop when all content is typed
 
-        if (typeof item === "string") {
-          typeString(item, 0);
-        } else if (item.type === "link") {
-          const linkElement = document.createElement("a");
-          linkElement.href = item.href;
-          linkElement.className = "red-text";
-          linkElement.textContent = ""; // Start with an empty link
-          typingTextElement.insertBefore(linkElement, cursor);
-          typeStringInElement(linkElement, item.text, 0);
-        } else if (item.type === "red") {
-          const spanElement = document.createElement("span");
-          spanElement.className = "red-text";
-          typingTextElement.insertBefore(spanElement, cursor);
-          typeStringInElement(spanElement, item.text, 0);
-        }
-      }
-    }
+  const item = content[index];
 
-    function typeString(str, charIndex) {
-      if (charIndex < str.length) {
-        typingTextElement.insertBefore(document.createTextNode(str.charAt(charIndex)), cursor);
-        setTimeout(() => typeString(str, charIndex + 1), typingSpeed);
-      } else {
-        index++;
-        setTimeout(typeContent, typingSpeed);
-      }
-    }
+  if (typeof item === "string") {
+    typeString(item, 0, () => {
+      index++;
+      typeContent();
+    });
+  } else if (item.type === "link") {
+    const linkElement = document.createElement("a");
+    linkElement.href = item.href;
+    linkElement.className = "red-text";
+    linkElement.textContent = ""; // Empty at first
+    typingTextElement.insertBefore(linkElement, cursor);
+    typeStringInElement(linkElement, item.text, 0, () => {
+      index++;
+      typingTextElement.insertBefore(document.createElement("br"), cursor);
+      typeContent();
+    });
+  } else if (item.type === "red") {
+    const spanElement = document.createElement("span");
+    spanElement.className = "red-text";
+    typingTextElement.insertBefore(spanElement, cursor);
+    typeStringInElement(spanElement, item.text, 0, () => {
+      index++;
+      typingTextElement.insertBefore(document.createElement("br"), cursor);
+      typeContent();
+    });
+  }
+}
 
-    function typeStringInElement(element, str, charIndex) {
-      if (charIndex < str.length) {
-        element.textContent += str.charAt(charIndex);
-        setTimeout(() => typeStringInElement(element, str, charIndex + 1), typingSpeed);
-      } else {
-        cursor.style.visibility = "hidden";  // Hide the cursor temporarily
-        index++;
-        typingTextElement.insertBefore(document.createElement("br"), cursor);
-        setTimeout(() => {
-          cursor.style.visibility = "visible";  // Restore the cursor for the next section
-          typeContent();
-        }, typingSpeed);
-      }
-    }
+function typeString(str, charIndex, callback) {
+  if (charIndex < str.length) {
+    typingTextElement.insertBefore(document.createTextNode(str.charAt(charIndex)), cursor);
+    setTimeout(() => typeString(str, charIndex + 1, callback), typingSpeed);
+  } else {
+    callback();
+  }
+}
+
+function typeStringInElement(element, str, charIndex, callback) {
+  if (charIndex < str.length) {
+    element.textContent += str.charAt(charIndex);
+    setTimeout(() => typeStringInElement(element, str, charIndex + 1, callback), typingSpeed);
+  } else {
+    callback();
+  }
+}
+
+window.onload = typeContent;
 
     window.onload = typeContent;
   </script>

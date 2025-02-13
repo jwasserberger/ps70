@@ -2,104 +2,128 @@
 <html lang="en">
 
 <head>
-  <title>ps70 w2 2d design & cutting</title>
+  <title>ps70 w2 the box</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Roboto Mono', monospace;
+      background-color: #000000;
+      color: white;
+      padding: 20px;
+    }
+
+    .typing-container pre span#cursor {
+      border-right: 6px solid white;
+      animation: blink 0.7s steps(2) infinite;
+    }
+
+    /* Blinking wide cursor animation */
+    @keyframes blink {
+      0% {
+        border-color: white;
+      }
+      50% {
+        border-color: transparent;
+      }
+      100% {
+        border-color: white;
+      }
+    }
+
+    a {
+      color: #ff0000;
+      text-decoration: none;
+    }
+
+    .red-text {
+      color: #ff0000;
+    }
+  </style>
 </head>
 
-<body bgcolor="gray">
-  <div>
-    <pre>
-      <a href="https://jlhansen9.github.io/PS70/">back to home</a> 
-    </pre>
-  </div>
-  <div>
-    <pre>
-/week two: 2D design & cutting
-    </pre>
-  </div>
-  
-  <div>
-    <pre style="color:#606060">
-# fusion 360 tutorial
-    </pre>
-    <pre style="color:#606060">
-# --------------------------------------------------------------------------------
-    </pre>
-    <p>
-      i choose to make the lego block from one of the 
-      <a href="https://www.youtube.com/watch?v=d3qGQ2utl2A">recommended tutorials</a>. 
-      this short tutorial covered a lot of most useful basics to fusion. my favourite new 
-      function, that I hadn't used before, is shell, which hollows out a surface to a certain thickness. 
-      definitely will save this model for when we get to 3d printing. I foresee a lego paper weight. 
-    </p>
-    <p>
-      tutorial
-      <img src="tutorial_youtube.jpg" width="600" alt="youtube tutorial">
-    </p>
-    <p>
-      completed model
-      <img src="tutorial_fusion.jpg" width="600" alt="completed model in fusion">
-    </p>
+<body>
+  <div class="typing-container">
+    <pre id="typing-text"><span id="cursor"></span></pre>
   </div>
 
-  <div>
-    <pre style="color:#606060">
-# household objects
-    </pre>
-    <pre style="color:#606060">
-# --------------------------------------------------------------------------------
-    </pre>
-    <p>
-      i chose two objects from home to model: one of my kitchen knives and a wok. 
-      these objects were interesting to me because the geometry seemed doable in fusion 
-      but not so complicated that I couldn't do it.
-    </p>
-    <p>
-      kitchen knife and model
-      <img src="Knife.jpg" width="300">
-      <img src="knife_model.jpg" width="300">
-    </p>
-    i wasn't able to capture all dimensions using calipers so had to just estimate 
-    dimensions based on general proportions. i felt pretty good with how it turned out. 
-    a couple of key details that i wasn't quite able to capture was: (1) the handles 
-    and their pins on the internal side of the wok. (2) the exact tapering of the knife blade
-    because of the blend of curved and straight taper.
-    <p>
-      cooking wok and model
-      <img src="wok.jpg" width="300">
-      <img src="wok_model.jpg" width="300">
-    </p>
-  </div>
+  <script>
+    // Content with fixes applied
+    const content = [
+      { type: "link", text: "back to home", href: "https://jwasserberger.github.io/ps70/" },
+      "\n\n",
+      "/week one: making the box",
+      "\n\n",
+      { type: "red", text: "# the fusion data..." },
+      "\n",
+      { type: "red", text: "--------------------------------------------------------------------------------" },
+      "\n\n",
+      "i started out knowing i wanted to use finger joints, as it's much cleaner than glue and looks a lot better\n\n",
+      "i started out following the finger joint tutorial by hobbyist maker on youtube, but deviated by adding two finger holes in the top of the box\n\n",
+      "the finger holes serve two purposes:\n\n",
+      "- easy way to open and close the box\n\n",
+      "- easy way to drop small objects into the box\n\n\n",
+      "there was some trickiness with the bottom of the box. as you can see, that does not use finger joints. in retrospect, i would've liked it to have but in its current form the box is secure and that's what a box should be\n\n",
+      "1. i want the \"keyboard\" to be able to receive manually inputted templates, so the user could hit a single key and an entire piece of text would appear. I'm using the word \"keyboard\" loosely, this is really an attachment to any normal keyboard. \n",
+      "images below!"
+    ];
 
-  <div>
-    <pre style="color:#606060">
-# the mighty milk crate
-    </pre>
-    <pre style="color:#606060">
-# --------------------------------------------------------------------------------
-    </pre>
-    <p>
-      your fun fact for the week is that the milk crate was invented in australia in the 1950s. 
-      as a proud australian who consumes an above average amount of milk, i wanted to make my own.
-      it represents indestrucible multi-functional industrialisation to me, so i wanted to channel
-      that energy into PS70. more stylish and modern versions have been made by companies like 
-      hay (see photo below).
-    </p>
-    <p>
-      <img src="green_milk_crate.jpg" width="300">
-      <img src="hay_crate.jpg" width="300">
-    </p>
-    <p>
-      following this weeks lab, i had an idea for modelling teeth using a rectangular pattern 
-      but i wanted something slightly sturdier. instead i decided to model teeth to fit into 
-      slots. i modelled this in fusion as five different panels to create a box without a lid.
-      the parameters came in handy when i got to the laser printer and realised the sizing was 
-      off. i had to rescale and tweak but thankfully it worked out in the end. i also learnt my
-      lesson about allowing time for the laser cutter queue!
-    </p>
-  </div>  
+    let index = 0;
+    const typingSpeed = 25;
+    const typingTextElement = document.getElementById("typing-text");
+    const cursor = document.getElementById("cursor");
 
+    function typeContent() {
+      if (index < content.length) {
+        const item = content[index];
+
+        if (typeof item === "string") {
+          typeString(item, 0);
+        } else if (item.type === "link") {
+          const linkElement = document.createElement("a");
+          linkElement.href = item.href;
+          linkElement.className = "red-text";
+          linkElement.textContent = ""; // Start with an empty link
+          typingTextElement.insertBefore(linkElement, cursor);
+          typeStringInElement(linkElement, item.text, 0);
+        } else if (item.type === "red") {
+          const spanElement = document.createElement("span");
+          spanElement.className = "red-text";
+          typingTextElement.insertBefore(spanElement, cursor);
+          typeStringInElement(spanElement, item.text, 0);
+        }
+      }
+    }
+
+    function typeString(str, charIndex) {
+      if (charIndex < str.length) {
+        typingTextElement.insertBefore(document.createTextNode(str.charAt(charIndex)), cursor);
+        setTimeout(() => typeString(str, charIndex + 1), typingSpeed);
+      } else {
+        index++;
+        setTimeout(typeContent, typingSpeed);
+      }
+    }
+
+    function typeStringInElement(element, str, charIndex) {
+      if (charIndex < str.length) {
+        element.textContent += str.charAt(charIndex);
+        setTimeout(() => typeStringInElement(element, str, charIndex + 1), typingSpeed);
+      } else {
+        cursor.style.visibility = "hidden";  // Hide the cursor temporarily
+        index++;
+        typingTextElement.insertBefore(document.createElement("br"), cursor);
+        setTimeout(() => {
+          cursor.style.visibility = "visible";  // Restore the cursor for the next section
+          typeContent();
+        }, typingSpeed);
+      }
+    }
+
+    window.onload = typeContent;
+  </script>
 </body>
-
-<link rel="stylesheet" href="../../style.css">
 
 </html>
