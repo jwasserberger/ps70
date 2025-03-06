@@ -2,68 +2,178 @@
 <html lang="en">
 
 <head>
-  <title>week 5 of ps70 with manas</title> 
-  <link rel="preconnect" href="https://fonts.googleapis.com"> 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+  <title>ps70 week5: 3D fabrication</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Roboto Mono', monospace;
+      background-color: #000000;
+      color: white;
+      padding: 20px;
+    }
+
+    .typing-container pre span#cursor {
+      border-right: 6px solid white;
+      animation: blink 0.7s steps(2) infinite;
+    }
+
+    @keyframes blink {
+      0% { border-color: white; }
+      50% { border-color: transparent; }
+      100% { border-color: white; }
+    }
+
+    a {
+      color: #ff0000;
+      text-decoration: none;
+    }
+
+    .red-text {
+      color: #ff0000;
+    }
+
+    .image-placeholder {
+      display: none;
+      width: 800px;
+      background-color: #333;
+      overflow: hidden;
+      position: relative;
+      margin-top: 20px;
+    }
+
+    img {
+      width: 800px;
+      height: auto;
+      border: 2px solid red;
+      opacity: 0;
+      animation: load-image 3s steps(10) forwards;
+    }
+
+    /* Hide code snippet and button initially */
+    #code-container {
+      display: none;
+      opacity: 0;
+      transition: opacity 1s ease-in;
+    }
+  </style>
 </head>
 
-<body bgcolor=#000000>
-  
-    <div>
-    <pre>
-<a href="https://jlhansen9.github.io/PS70/">back to home</a> 
-    </pre>
+<body>
+  <div class="typing-container">
+    <pre id="typing-text"><span id="cursor"></span></pre>
   </div>
+</pre>
+<a href="#" class="red-text" onclick="copyToClipboard('code-snippet')"></a>
+<a download href="weeks/week5/P_BASIC_COLOR_0.15mm_PLA_MK3S_1h56m.gcode">Download my gcode file</a><br>
+<a download href="weeks/week5/Traffic_Cone_Buddy.stl">Download my STL file</a><br>
+<a download href="weeks/week5/P_BASIC_COLOR.3mf">Download my 3mf file</a><br>
+<img src="weeks/week5/Screenshot 2025-03-06 at 2.23.24 PM.png" width="500" alt="gcode view">
+<img src="weeks/week5/IMG_0584_fixed.png" width="500" alt="irl view"></div>
 
-  <div>
-    <pre>
-/week 5: 3D design & printing
-    </pre>
-  </div>
-  
-  <div>
-    <pre style="color:gray">
-# 3d design and printing
-    </pre>
-    <pre style="color:gray">
-# ---------------------------------
-  </pre>
 
-<p>
-  While I had already skipped ahead and printed something for my kinetic sculpture. This week I played with an object that might be useful for later weeks.
-</p>
 
-<p>
-  In anticipation of the molding exercise, I chose to print a small bunny taken from <a href="https://www.thingiverse.com/thing:752379#google_vignette">Thingiverse</a>. I'm really loving 3D printing and producing models in Fusion. It was quite easy grabbing something from Thingiverse and printing. PrusaSlicer for generating gcode and printing is so striaghtforward. Fusion takes some adjusting but once you get on a roll, it's quite enjoyable.
-</p>
+<script>
+function handleImageError() {
+    console.error("Image not found! Check the path.");
+    alert("Error: Image not found! Check if 'week4/LED_DEMO.png' exists.");
+    document.getElementById("ledImage").style.display = "none";
+}
 
-<p>A direct copy of the STL for Ducky the bunny is <a download href='week5/Ducky.stl'>here</a>.</p>
+const content = [
+  { type: "link", text: "back to home", href: "https://jwasserberger.github.io/ps70/" },
+  "\n\n",
+  "/week five: 3D fabrication",
+  "\n\n",
+  { type: "red", text: "# desk toy..." },
+  "\n",
+  { type: "red", text: "--------------------------------------------------------------------------------" },
+  "\n\n",
+  "i wanted to make a little desk buddy to look painfully at while you're grinding a pset or studying for a midterm\n\n",
+  "the body is a pretty simple cone with a rectangular base\n\n",
+  "arms and chain-legs were inspired by some similar designs that i need to go back and find the links for. i edited the legs adding two things\n\n",
+  "- increased flexibility so they would be more floppy and more easily situate themselves on a desk\n\n",
+  "- added the PS70 to the base of the feet, inspired by how Woody in Toy Story has Andy's name on his foot\n\n",
+]; 
 
-  </div>
+let index = 0;
+const typingSpeed = 25;
+const typingTextElement = document.getElementById("typing-text");
+const cursor = document.getElementById("cursor");
 
-  <div>
-    <pre style="color:gray">
-# scanning
-    </pre>
-    <pre style="color:gray">
-# ---------------------------------
-  </pre>
+function typeContent() {
+  if (index < content.length) {
+    const item = content[index];
 
-  <p>
-  Photogrammetry was not an easy process. Using the Revopoint 3D scanner I scanned a bust of <a download href='week5/Caesar Head.stl'>Julius Caesar's head</a>. This was only after trying to scan other objects, including my house key and glasses, that all proved to be too shiny and reflective for the camera.
-  </p>
+    if (typeof item === "string") {
+      typeString(item, 0);
+    } else if (item.type === "link") {
+      const linkElement = document.createElement("a");
+      linkElement.href = item.href;
+      linkElement.className = "red-text";
+      linkElement.textContent = "";
+      typingTextElement.insertBefore(linkElement, cursor);
+      typeStringInElement(linkElement, item.text, 0);
+    } else if (item.type === "red") {
+      const spanElement = document.createElement("span");
+      spanElement.className = "red-text";
+      typingTextElement.insertBefore(spanElement, cursor);
+      typeStringInElement(spanElement, item.text, 0);
+    }
+  } else {
+    showCodeSnippet(); // Reveal code snippet after typing finishes
+  }
+}
 
-  <p><img src="week5/caesar_head_2.png" width="500" alt="caesar bust"></p>
+function typeString(str, charIndex) {
+  if (charIndex < str.length) {
+    typingTextElement.insertBefore(document.createTextNode(str.charAt(charIndex)), cursor);
+    setTimeout(() => typeString(str, charIndex + 1), typingSpeed);
+  } else {
+    index++;
+    setTimeout(typeContent, typingSpeed);
+  }
+}
 
-<p>
-  With help from Cassia, it then took a lot of time to manually clean up the point cloud after the scan picked up the ground surface for each angle at which the bust was scanned. The point cloud then ended up being 60MB so maybe it wouldn't have been best to just do two scans of the bust, not three.
-</p>
+function typeStringInElement(element, str, charIndex) {
+  if (charIndex < str.length) {
+    element.textContent += str.charAt(charIndex);
+    setTimeout(() => typeStringInElement(element, str, charIndex + 1), typingSpeed);
+  } else {
+    cursor.style.visibility = "hidden";  
+    index++;
+    typingTextElement.insertBefore(document.createElement("br"), cursor);
+    setTimeout(() => {
+      cursor.style.visibility = "visible";  
+      typeContent();
+    }, typingSpeed);
+  }
+}
 
-  </div>
+function showCodeSnippet() {
+  const codeContainer = document.getElementById("code-container");
+  codeContainer.style.display = "block";
+  setTimeout(() => {
+    codeContainer.style.opacity = "1";
+  }, 100); 
+}
+
+function copyToClipboard(elementId) {
+  var codeElement = document.getElementById(elementId);
+  var text = codeElement.innerText || codeElement.textContent;
+
+  navigator.clipboard.writeText(text).then(() => {
+      alert("Code copied to clipboard!");
+  }).catch(err => {
+      console.error("Failed to copy: ", err);
+  });
+}
+
+window.onload = typeContent;
+</script>
 
 </body>
-
-<link rel="stylesheet" href="../../style.css">
 
 </html>
