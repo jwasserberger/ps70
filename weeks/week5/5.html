@@ -35,23 +35,6 @@
       color: #ff0000;
     }
 
-    .image-placeholder {
-      display: none;
-      width: 800px;
-      background-color: #333;
-      overflow: hidden;
-      position: relative;
-      margin-top: 20px;
-    }
-
-    img {
-      width: 800px;
-      height: auto;
-      border: 2px solid red;
-      opacity: 0;
-      animation: load-image 3s steps(10) forwards;
-    }
-
     /* Hide code snippet and button initially */
     #code-container {
       display: none;
@@ -67,20 +50,16 @@
   </div>
 </pre>
 <a href="#" class="red-text" onclick="copyToClipboard('code-snippet')"></a>
-<a download href="weeks/week5/P_BASIC_COLOR_0.15mm_PLA_MK3S_1h56m.gcode">Download my gcode file</a><br>
-<a download href="weeks/week5/Traffic_Cone_Buddy.stl">Download my STL file</a><br>
-<a download href="weeks/week5/P_BASIC_COLOR.3mf">Download my 3mf file</a><br>
-<img src="weeks/week5/Screenshot 2025-03-06 at 2.23.24 PM.png" width="500" alt="gcode view">
-<img src="weeks/week5/IMG_0584_fixed.png" width="500" alt="irl view"></div>
+<a download href="./P_BASIC_COLOR_0.15mm_PLA_MK3S_1h56m.gcode">Download my gcode file</a><br>
+<a download href="./Traffic_Cone_Buddy.stl">Download my STL file</a><br>
+<a download href="./P_BASIC_COLOR.3mf">Download my 3mf file</a><br>
+<img src="./prusa-cone.png" width="500" alt="gcode view">
+<img src="./IMG_0584_fixed.png" width="500" alt="irl view">
+<img src="./IMG_C9A77A5E1142-1.jpeg" width="500" alt="irl view"></div>
 
 
 
 <script>
-function handleImageError() {
-    console.error("Image not found! Check the path.");
-    alert("Error: Image not found! Check if 'week4/LED_DEMO.png' exists.");
-    document.getElementById("ledImage").style.display = "none";
-}
 
 const content = [
   { type: "link", text: "back to home", href: "https://jwasserberger.github.io/ps70/" },
@@ -96,7 +75,10 @@ const content = [
   "arms and chain-legs were inspired by some similar designs that i need to go back and find the links for. i edited the legs adding two things\n\n",
   "- increased flexibility so they would be more floppy and more easily situate themselves on a desk\n\n",
   "- added the PS70 to the base of the feet, inspired by how Woody in Toy Story has Andy's name on his foot\n\n",
-]; 
+  "for the scanning portion of the assignment, i started with LIDAR and tried to scan my camera, but evidently scanning an all-black object creates issues with shadows\n\n",
+  "shoutout Zayid for showing me scaniverse, which is a photgrammetry scanning app that was able to create a pretty good scan in like 30 seconds (attached)\n\n",
+  "i wanted to keep my scan photography related so tried my external light, but it iniitally blended in with the white table, so i used the light itself to creatre contrast and voila!\n\n",
+];
 
 let index = 0;
 const typingSpeed = 25;
