@@ -2,68 +2,210 @@
 <html lang="en">
 
 <head>
-  <title>PS70: Intro to Digital Fabrication</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"> 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+  <title>ps70 week 7: MVP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Roboto Mono', monospace;
+      background-color: #000000;
+      color: white;
+      padding: 20px;
+    }
+
+    .typing-container pre span#cursor {
+      border-right: 6px solid white;
+      animation: blink 0.7s steps(2) infinite;
+    }
+
+    @keyframes blink {
+      0% { border-color: white; }
+      50% { border-color: transparent; }
+      100% { border-color: white; }
+    }
+
+    a {
+      color: #ff0000;
+      text-decoration: none;
+    }
+
+    .red-text {
+      color: #ff0000;
+    }
+
+    .image-placeholder {
+      display: none;
+      width: 800px;
+      background-color: #333;
+      overflow: hidden;
+      position: relative;
+      margin-top: 20px;
+    }
+
+    img {
+      width: 800px;
+      height: auto;
+      border: 2px solid red;
+      opacity: 0;
+      animation: load-image 3s steps(10) forwards;
+    }
+
+    /* Hide code snippet and button initially */
+    #code-container {
+      display: none;
+      opacity: 0;
+      transition: opacity 1s ease-in;
+    }
+  </style>
 </head>
 
-<body bgcolor=#000000>
-  
-    <div>
-    <pre>
-<a href="https://jlhansen9.github.io/PS70/">back to home</a> 
-    </pre>
+<body>
+  <div class="typing-container">
+    <img id="ledImage" src="week7/IMG_0653.png" alt="Old-School Loading Image" onerror="handleImageError()">
+    <video id="keyboardworks" src="week7/IMG_0654 copy.mp4" alt="Old-School Loading Image" onerror="handleImageError()"
+    <pre id="typing-text"><span id="cursor"></span></pre>
   </div>
 
-  <div>
-    <pre>
-/ Final Project MVP: Progress
-    </pre>
-  </div>
-  
-<p>
-  I am continuing with my final project idea of a music box that records sound using a microphone and processes it converting into music that can be listened to through headphones.
-</p>
+  <!-- Code Snippet Container (Hidden Initially) -->
+  <div id="code-container">
+    <pre id="code-snippet">
+      #include <BleKeyboard.h>
 
-<p>My goal for an MVP is to have a microphone, potentiometer and a speaker (output) all on one breadboard. This represents the basic circuitry I need, taking audio in, processing and then producing an audio out. I expect the circuitry to be straightforward and the software to be the most challenging aspect of this project.</p>
+        // Create a BLE keyboard object with a custom device name and manufacturer.
+        BleKeyboard bleKeyboard("MonoKey", "Seeed", 100);
+        
+        // Use GPIO 2 for the button.
+        const int buttonPin = 32;
+        
+        void setup() {
+          Serial.begin(115200);
+          pinMode(buttonPin, INPUT_PULLUP);  // Enable internal pull-up resistor
+        
+          // Start BLE keyboard advertising
+          bleKeyboard.begin();
+          Serial.println("BLE Keyboard started!");
+        }
+        
+        void loop() {
+          // Only send keypresses if a central device is connected.
+          if (bleKeyboard.isConnected()) {
+            // Check if the button is pressed (LOW means pressed with INPUT_PULLUP)
+            if (digitalRead(buttonPin) == LOW) {
+              Serial.println("pressing A");
+              bleKeyboard.press('A');
+              delay(50);
+              bleKeyboard.releaseAll();  // Release all keys after the press
+        
+              // Debounce delay to avoid multiple triggers.
+              delay(300);
+            }
+          }
+        
+          delay(10);  // Small delay to allow background BLE tasks to run
+        }
+</pre>
+<a href="#" class="red-text" onclick="copyToClipboard('code-snippet')">Copy Code</a></div>
 
+<script>
+function handleImageError() {
+    console.error("Image not found! Check the path.");
+    alert("Error: Image not found! Check if 'week4/LED_DEMO.png' exists.");
+    document.getElementById("ledImage").style.display = "none";
+}
 
-<p>
-  I upgraded from an Arduino Uno to an ESP-WROOM-32 which has a better Digital Audio Converter than the Uno. I also upgraded to an INMP441 I2S Microphone, with better sound quality.
-</p>
+const content = [
+  { type: "link", text: "back to home", href: "https://jwasserberger.github.io/ps70/" },
+  "\n\n",
+  "/week four: microcontroller programming",
+  "\n\n",
+  { type: "red", text: "# lights..." },
+  "\n",
+  { type: "red", text: "--------------------------------------------------------------------------------" },
+  "\n\n",
+ "given that i am making a keyboard, the first step was to make *drumroll please* a key!\n\n",
+ "as far as a 'minimum viable product' this is about as minimum as it gets, but actually pretty important for the final project\n\n",
+ "we now have proof that a keyboard *can* be built, so now it's just about expanding out this code to include full keyboard functionality, and then add a few keys for the pre-written components\n\n",
+ "the next step will be to start printing keycaps and a keyboard housing shell and then structure the internals to fit within\n\n",
+]; 
 
-<p><img src="elec_code/upgrade_mic_esp32.png" width="500" alt="upgrades"></p>
+let index = 0;
+const typingSpeed = 25;
+const typingTextElement = document.getElementById("typing-text");
+const cursor = document.getElementById("cursor");
 
-<p>
-  This week represents my third attempt at using I2S and relying less and less on prewritten examples. With Bobby's unwavering support, we are realising the limitations of libraries for customisation and achieving what I am aiming for. It will require using I2S more from first principles instead of libraries, of which there are many (<a href="https://github.com/schreibfaul1">@schreibfaul1</a> , in particular)
-</p>
+function typeContent() {
+  if (index < content.length) {
+    const item = content[index];
 
-<p>
-  The most useful example explanation and set of introductory examples has been <a href="https://dronebotworkshop.com/esp32-i2s/">Drone Bot Workshop</a> . This page covers the basics of I2S, microphones, potentiometers, speakers and online WiFi streaming. The code in these examples was the basis for what I was then trying to merge to have the microphone, potentiometer and speaker working together.
-</p>
+    if (typeof item === "string") {
+      typeString(item, 0);
+    } else if (item.type === "link") {
+      const linkElement = document.createElement("a");
+      linkElement.href = item.href;
+      linkElement.className = "red-text";
+      linkElement.textContent = "";
+      typingTextElement.insertBefore(linkElement, cursor);
+      typeStringInElement(linkElement, item.text, 0);
+    } else if (item.type === "red") {
+      const spanElement = document.createElement("span");
+      spanElement.className = "red-text";
+      typingTextElement.insertBefore(spanElement, cursor);
+      typeStringInElement(spanElement, item.text, 0);
+    }
+  } else {
+    showCodeSnippet(); // Reveal code snippet after typing finishes
+  }
+}
 
-<p>
-  I successfully got the microphone working on its own. Then I got the potentiometer and speaker working on their own. But then I couldn't do all three *shakes fist at sky*
-</p>
+function typeString(str, charIndex) {
+  if (charIndex < str.length) {
+    typingTextElement.insertBefore(document.createTextNode(str.charAt(charIndex)), cursor);
+    setTimeout(() => typeString(str, charIndex + 1), typingSpeed);
+  } else {
+    index++;
+    setTimeout(typeContent, typingSpeed);
+  }
+}
 
-<p>
-  <img src="week7/circuit_esp32_mic_potentiometer_speaker.png" width="500" alt="inside view">
-</p>
+function typeStringInElement(element, str, charIndex) {
+  if (charIndex < str.length) {
+    element.textContent += str.charAt(charIndex);
+    setTimeout(() => typeStringInElement(element, str, charIndex + 1), typingSpeed);
+  } else {
+    cursor.style.visibility = "hidden";  
+    index++;
+    typingTextElement.insertBefore(document.createElement("br"), cursor);
+    setTimeout(() => {
+      cursor.style.visibility = "visible";  
+      typeContent();
+    }, typingSpeed);
+  }
+}
 
-<p>Here is the code for the microphone:</p>
-<iframe src="hhttps://app.arduino.cc/sketches/83740339-c6ff-47e6-a341-ac6ef81d0bb5" style="height:510px;width:100%;margin:10px 0" frameborder=0></iframe>
+function showCodeSnippet() {
+  const codeContainer = document.getElementById("code-container");
+  codeContainer.style.display = "block";
+  setTimeout(() => {
+    codeContainer.style.opacity = "1";
+  }, 100); 
+}
 
+function copyToClipboard(elementId) {
+  var codeElement = document.getElementById(elementId);
+  var text = codeElement.innerText || codeElement.textContent;
 
-<p>Here is the Speaker and Potentiometer Code playing radio over WiFi:
-<iframe src="https://app.arduino.cc/sketches/d64403a7-c79d-4bae-827b-87cfc37f4189" style="height:510px;width:100%;margin:10px 0" frameborder=0></iframe>
-</p>
+  navigator.clipboard.writeText(text).then(() => {
+      alert("Code copied to clipboard!");
+  }).catch(err => {
+      console.error("Failed to copy: ", err);
+  });
+}
 
-<p>Next steps are to continue working on the coding. I will order an audio jack for connecting headphones. Bobby suspects we will need to stop using libraries and rely on just the I2S driver.  Entering uncharted territory that neither he or Nathan has tried before...
-</p>
+window.onload = typeContent;
+</script>
 
 </body>
-
-<link rel="stylesheet" href="../../style.css">
 
 </html>
