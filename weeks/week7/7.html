@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+  <meta charset="UTF-8">
   <title>ps70 week 7: MVP</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,6 +24,12 @@
       0% { border-color: white; }
       50% { border-color: transparent; }
       100% { border-color: white; }
+    }
+    
+    /* Define keyframes for image fade-in animation */
+    @keyframes load-image {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     a {
@@ -60,152 +66,149 @@
     }
   </style>
 </head>
-
 <body>
   <div class="typing-container">
     <img id="ledImage" src="week7/IMG_0653.png" alt="Old-School Loading Image" onerror="handleImageError()">
-    <video id="keyboardworks" src="week7/IMG_0654 copy.mp4" alt="Old-School Loading Image" onerror="handleImageError()"
+    <video id="keyboardworks" src="week7/IMG_0654 copy.mp4" onerror="handleImageError()" controls></video>
     <pre id="typing-text"><span id="cursor"></span></pre>
   </div>
 
   <!-- Code Snippet Container (Hidden Initially) -->
   <div id="code-container">
     <pre id="code-snippet">
-      #include <BleKeyboard.h>
+#include &lt;BleKeyboard.h&gt;
 
-        // Create a BLE keyboard object with a custom device name and manufacturer.
-        BleKeyboard bleKeyboard("MonoKey", "Seeed", 100);
-        
-        // Use GPIO 2 for the button.
-        const int buttonPin = 32;
-        
-        void setup() {
-          Serial.begin(115200);
-          pinMode(buttonPin, INPUT_PULLUP);  // Enable internal pull-up resistor
-        
-          // Start BLE keyboard advertising
-          bleKeyboard.begin();
-          Serial.println("BLE Keyboard started!");
-        }
-        
-        void loop() {
-          // Only send keypresses if a central device is connected.
-          if (bleKeyboard.isConnected()) {
-            // Check if the button is pressed (LOW means pressed with INPUT_PULLUP)
-            if (digitalRead(buttonPin) == LOW) {
-              Serial.println("pressing A");
-              bleKeyboard.press('A');
-              delay(50);
-              bleKeyboard.releaseAll();  // Release all keys after the press
-        
-              // Debounce delay to avoid multiple triggers.
-              delay(300);
-            }
-          }
-        
-          delay(10);  // Small delay to allow background BLE tasks to run
-        }
-</pre>
-<a href="#" class="red-text" onclick="copyToClipboard('code-snippet')">Copy Code</a></div>
+// Create a BLE keyboard object with a custom device name and manufacturer.
+BleKeyboard bleKeyboard("MonoKey", "Seeed", 100);
 
-<script>
-function handleImageError() {
-    console.error("Image not found! Check the path.");
-    alert("Error: Image not found! Check if 'week4/LED_DEMO.png' exists.");
-    document.getElementById("ledImage").style.display = "none";
+// Use GPIO 2 for the button.
+const int buttonPin = 32;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(buttonPin, INPUT_PULLUP);  // Enable internal pull-up resistor
+
+  // Start BLE keyboard advertising
+  bleKeyboard.begin();
+  Serial.println("BLE Keyboard started!");
 }
 
-const content = [
-  { type: "link", text: "back to home", href: "https://jwasserberger.github.io/ps70/" },
-  "\n\n",
-  "/week four: microcontroller programming",
-  "\n\n",
-  { type: "red", text: "# lights..." },
-  "\n",
-  { type: "red", text: "--------------------------------------------------------------------------------" },
-  "\n\n",
- "given that i am making a keyboard, the first step was to make *drumroll please* a key!\n\n",
- "as far as a 'minimum viable product' this is about as minimum as it gets, but actually pretty important for the final project\n\n",
- "we now have proof that a keyboard *can* be built, so now it's just about expanding out this code to include full keyboard functionality, and then add a few keys for the pre-written components\n\n",
- "the next step will be to start printing keycaps and a keyboard housing shell and then structure the internals to fit within\n\n",
-]; 
+void loop() {
+  // Only send keypresses if a central device is connected.
+  if (bleKeyboard.isConnected()) {
+    // Check if the button is pressed (LOW means pressed with INPUT_PULLUP)
+    if (digitalRead(buttonPin) == LOW) {
+      Serial.println("pressing A");
+      bleKeyboard.press('A');
+      delay(50);
+      bleKeyboard.releaseAll();  // Release all keys after the press
 
-let index = 0;
-const typingSpeed = 25;
-const typingTextElement = document.getElementById("typing-text");
-const cursor = document.getElementById("cursor");
-
-function typeContent() {
-  if (index < content.length) {
-    const item = content[index];
-
-    if (typeof item === "string") {
-      typeString(item, 0);
-    } else if (item.type === "link") {
-      const linkElement = document.createElement("a");
-      linkElement.href = item.href;
-      linkElement.className = "red-text";
-      linkElement.textContent = "";
-      typingTextElement.insertBefore(linkElement, cursor);
-      typeStringInElement(linkElement, item.text, 0);
-    } else if (item.type === "red") {
-      const spanElement = document.createElement("span");
-      spanElement.className = "red-text";
-      typingTextElement.insertBefore(spanElement, cursor);
-      typeStringInElement(spanElement, item.text, 0);
+      // Debounce delay to avoid multiple triggers.
+      delay(300);
     }
-  } else {
-    showCodeSnippet(); // Reveal code snippet after typing finishes
   }
+  
+  delay(10);  // Small delay to allow background BLE tasks to run
 }
+    </pre>
+    <a href="#" class="red-text" onclick="copyToClipboard('code-snippet')">Copy Code</a>
+  </div>
 
-function typeString(str, charIndex) {
-  if (charIndex < str.length) {
-    typingTextElement.insertBefore(document.createTextNode(str.charAt(charIndex)), cursor);
-    setTimeout(() => typeString(str, charIndex + 1), typingSpeed);
-  } else {
-    index++;
-    setTimeout(typeContent, typingSpeed);
-  }
-}
+  <script>
+    function handleImageError() {
+      console.error("Image not found! Check the path.");
+      alert("Error: Image not found! Check if 'week7/IMG_0653.png' exists.");
+      document.getElementById("ledImage").style.display = "none";
+    }
 
-function typeStringInElement(element, str, charIndex) {
-  if (charIndex < str.length) {
-    element.textContent += str.charAt(charIndex);
-    setTimeout(() => typeStringInElement(element, str, charIndex + 1), typingSpeed);
-  } else {
-    cursor.style.visibility = "hidden";  
-    index++;
-    typingTextElement.insertBefore(document.createElement("br"), cursor);
-    setTimeout(() => {
-      cursor.style.visibility = "visible";  
-      typeContent();
-    }, typingSpeed);
-  }
-}
+    const content = [
+      { type: "link", text: "back to home", href: "https://jwasserberger.github.io/ps70/" },
+      "\n\n",
+      "/week seven: microcontroller programming",
+      "\n\n",
+      { type: "red", text: "# lights..." },
+      "\n",
+      { type: "red", text: "--------------------------------------------------------------------------------" },
+      "\n\n",
+      "given that i am making a keyboard, the first step was to make *drumroll please* a key!\n\n",
+      "as far as a 'minimum viable product' this is about as minimum as it gets, but actually pretty important for the final project\n\n",
+      "we now have proof that a keyboard *can* be built, so now it's just about expanding out this code to include full keyboard functionality, and then add a few keys for the pre-written components\n\n",
+      "the next step will be to start printing keycaps and a keyboard housing shell and then structure the internals to fit within\n\n",
+    ]; 
 
-function showCodeSnippet() {
-  const codeContainer = document.getElementById("code-container");
-  codeContainer.style.display = "block";
-  setTimeout(() => {
-    codeContainer.style.opacity = "1";
-  }, 100); 
-}
+    let index = 0;
+    const typingSpeed = 25;
+    const typingTextElement = document.getElementById("typing-text");
+    const cursor = document.getElementById("cursor");
 
-function copyToClipboard(elementId) {
-  var codeElement = document.getElementById(elementId);
-  var text = codeElement.innerText || codeElement.textContent;
+    function typeContent() {
+      if (index < content.length) {
+        const item = content[index];
 
-  navigator.clipboard.writeText(text).then(() => {
-      alert("Code copied to clipboard!");
-  }).catch(err => {
-      console.error("Failed to copy: ", err);
-  });
-}
+        if (typeof item === "string") {
+          typeString(item, 0);
+        } else if (item.type === "link") {
+          const linkElement = document.createElement("a");
+          linkElement.href = item.href;
+          linkElement.className = "red-text";
+          linkElement.textContent = "";
+          typingTextElement.insertBefore(linkElement, cursor);
+          typeStringInElement(linkElement, item.text, 0);
+        } else if (item.type === "red") {
+          const spanElement = document.createElement("span");
+          spanElement.className = "red-text";
+          typingTextElement.insertBefore(spanElement, cursor);
+          typeStringInElement(spanElement, item.text, 0);
+        }
+      } else {
+        showCodeSnippet(); // Reveal code snippet after typing finishes
+      }
+    }
 
-window.onload = typeContent;
-</script>
+    function typeString(str, charIndex) {
+      if (charIndex < str.length) {
+        typingTextElement.insertBefore(document.createTextNode(str.charAt(charIndex)), cursor);
+        setTimeout(() => typeString(str, charIndex + 1), typingSpeed);
+      } else {
+        index++;
+        setTimeout(typeContent, typingSpeed);
+      }
+    }
 
+    function typeStringInElement(element, str, charIndex) {
+      if (charIndex < str.length) {
+        element.textContent += str.charAt(charIndex);
+        setTimeout(() => typeStringInElement(element, str, charIndex + 1), typingSpeed);
+      } else {
+        cursor.style.visibility = "hidden";  
+        index++;
+        typingTextElement.insertBefore(document.createElement("br"), cursor);
+        setTimeout(() => {
+          cursor.style.visibility = "visible";  
+          typeContent();
+        }, typingSpeed);
+      }
+    }
+
+    function showCodeSnippet() {
+      const codeContainer = document.getElementById("code-container");
+      codeContainer.style.display = "block";
+      setTimeout(() => {
+        codeContainer.style.opacity = "1";
+      }, 100); 
+    }
+
+    function copyToClipboard(elementId) {
+      var codeElement = document.getElementById(elementId);
+      var text = codeElement.innerText || codeElement.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+          alert("Code copied to clipboard!");
+      }).catch(err => {
+          console.error("Failed to copy: ", err);
+      });
+    }
+
+    window.onload = typeContent;
+  </script>
 </body>
-
 </html>
