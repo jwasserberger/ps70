@@ -62,8 +62,39 @@
 
   <div id="code-container">
     <pre id="code-snippet">
-#include &lt;BleKeyboard.h&gt;
-// …
+<!-- Code Snippet Container (Hidden Initially) -->
+// Create a BLE keyboard object with a custom device name and manufacturer.
+BleKeyboard bleKeyboard("MonoKey", "Seeed", 100);
+
+// Use GPIO 2 for the button.
+const int buttonPin = 32;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(buttonPin, INPUT_PULLUP);  // Enable internal pull-up resistor
+
+  // Start BLE keyboard advertising
+  bleKeyboard.begin();
+  Serial.println("BLE Keyboard started!");
+}
+
+void loop() {
+  // Only send keypresses if a central device is connected.
+  if (bleKeyboard.isConnected()) {
+    // Check if the button is pressed (LOW means pressed with INPUT_PULLUP)
+    if (digitalRead(buttonPin) == LOW) {
+      Serial.println("pressing A");
+      bleKeyboard.press('A');
+      delay(50);
+      bleKeyboard.releaseAll();  // Release all keys after the press
+
+      // Debounce delay to avoid multiple triggers.
+      delay(300);
+    }
+  }
+  
+  delay(10);  // Small delay to allow background BLE tasks to run
+}
     </pre>
     <a href="#" onclick="copyToClipboard('code-snippet')">Copy Code</a>
   </div>
