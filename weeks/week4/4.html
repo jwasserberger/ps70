@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+  <meta charset="UTF-8">
   <title>ps70 week2: microcontroller programming</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,13 +36,10 @@
       color: #ff0000;
     }
 
-    .image-placeholder {
-      display: none;
-      width: 800px;
-      background-color: #333;
-      overflow: hidden;
-      position: relative;
-      margin-top: 20px;
+    /* fade-in animation for your LED image */
+    @keyframes load-image {
+      from { opacity: 0; }
+      to   { opacity: 1; }
     }
 
     img {
@@ -49,7 +47,9 @@
       height: auto;
       border: 2px solid red;
       opacity: 0;
-      animation: load-image 3s steps(10) forwards;
+      animation: load-image 1s ease-in forwards;
+      margin: 20px auto;
+      display: block;
     }
 
     /* Hide code snippet and button initially */
@@ -57,17 +57,23 @@
       display: none;
       opacity: 0;
       transition: opacity 1s ease-in;
+      margin-top: 20px;
     }
   </style>
 </head>
 
 <body>
   <div class="typing-container">
-    <img id="ledImage" src="week4/LED_DEMO.png" alt="Old-School Loading Image" onerror="handleImageError()">
+    <!-- now loading from same folder -->
+    <img
+      id="ledImage"
+      src="LED_DEMO.png"
+      alt="LED Demo"
+      onerror="handleImageError()">
     <pre id="typing-text"><span id="cursor"></span></pre>
   </div>
 
-  <!-- Code Snippet Container (Hidden Initially) -->
+  <!-- Code Snippet Container (hidden initially) -->
   <div id="code-container">
     <pre id="code-snippet">
 // My LED Potentiometer Code for XIAO ESP32C3
@@ -112,111 +118,99 @@ void loop() {
   // this feels like an appropriately speedy response time
   delay(100);
 }
-</pre>
-<a href="#" class="red-text" onclick="copyToClipboard('code-snippet')">Copy Code</a></div>
+    </pre>
+    <a href="#" class="red-text" onclick="copyToClipboard('code-snippet')">Copy Code</a>
+  </div>
 
-<script>
-function handleImageError() {
-    console.error("Image not found! Check the path.");
-    alert("Error: Image not found! Check if 'week4/LED_DEMO.png' exists.");
-    document.getElementById("ledImage").style.display = "none";
-}
-
-const content = [
-  { type: "link", text: "back to home", href: "https://jwasserberger.github.io/ps70/" },
-  "\n\n",
-  "/week four: microcontroller programming",
-  "\n\n",
-  { type: "red", text: "# lights..." },
-  "\n",
-  { type: "red", text: "--------------------------------------------------------------------------------" },
-  "\n\n",
-  "i was inspired by PK's LED + Potentiometer project but wanted to use an ESP32C3 and colored LEDS instead of a Metro board and white LEDS\n\n",
-  "i started out following his design but ran into a few problems, namely because the ESP32C3 and Metro boards are constructed very differently\n\n",
-  "there were three core problems\n\n",
-  "- i did not fully understand what the pins of a potentiometer do. shoutout Bobby for teaching me\n\n",
-  "- i did not fully understand what the pins on the ESP32C3 did. shoutout Bobby for teaching me\n\n",
-  "- the code was riddled with issues. shoutout Bobby for helping me\n\n",
-  "once i fixed the code (properly assigning each pin and including the Serial.begin debugger) the thing still wasn't working\n\n",
-  "after properly assigning each pin to each LED, flipping around an LED that wasn't properly arranged, and fixing resistor placement, we have LIGHT\n"
-]; 
-
-let index = 0;
-const typingSpeed = 25;
-const typingTextElement = document.getElementById("typing-text");
-const cursor = document.getElementById("cursor");
-
-function typeContent() {
-  if (index < content.length) {
-    const item = content[index];
-
-    if (typeof item === "string") {
-      typeString(item, 0);
-    } else if (item.type === "link") {
-      const linkElement = document.createElement("a");
-      linkElement.href = item.href;
-      linkElement.className = "red-text";
-      linkElement.textContent = "";
-      typingTextElement.insertBefore(linkElement, cursor);
-      typeStringInElement(linkElement, item.text, 0);
-    } else if (item.type === "red") {
-      const spanElement = document.createElement("span");
-      spanElement.className = "red-text";
-      typingTextElement.insertBefore(spanElement, cursor);
-      typeStringInElement(spanElement, item.text, 0);
+  <script>
+    function handleImageError() {
+      console.error("Image not found! Check the path.");
+      alert("Error: LED_DEMO.png not found in this folder.");
+      document.getElementById("ledImage").style.display = "none";
     }
-  } else {
-    showCodeSnippet(); // Reveal code snippet after typing finishes
-  }
-}
 
-function typeString(str, charIndex) {
-  if (charIndex < str.length) {
-    typingTextElement.insertBefore(document.createTextNode(str.charAt(charIndex)), cursor);
-    setTimeout(() => typeString(str, charIndex + 1), typingSpeed);
-  } else {
-    index++;
-    setTimeout(typeContent, typingSpeed);
-  }
-}
+    const content = [
+      { type: "link", text: "back to home", href: "https://jwasserberger.github.io/ps70/" },
+      "\n\n",
+      "/week four: microcontroller programming",
+      "\n\n",
+      { type: "red", text: "# lights..." },
+      "\n",
+      { type: "red", text: "--------------------------------------------------------------------------------" },
+      "\n\n",
+      "i was inspired by PK's LED + Potentiometer project but wanted to use an ESP32C3 and colored LEDS instead of a Metro board and white LEDS\n\n",
+      "i started out following his design but ran into a few problems, namely because the ESP32C3 and Metro boards are constructed very differently\n\n",
+      "there were three core problems\n\n",
+      "- i did not fully understand what the pins of a potentiometer do. shoutout Bobby for teaching me\n\n",
+      "- i did not fully understand what the pins on the ESP32C3 did. shoutout Bobby for teaching me\n\n",
+      "- the code was riddled with issues. shoutout Bobby for helping me\n\n",
+      "once i fixed the code (properly assigning each pin and including the Serial.begin debugger) the thing still wasn't working\n\n",
+      "after properly assigning each pin to each LED, flipping around an LED that wasn't properly arranged, and fixing resistor placement, we have LIGHT\n"
+    ];
 
-function typeStringInElement(element, str, charIndex) {
-  if (charIndex < str.length) {
-    element.textContent += str.charAt(charIndex);
-    setTimeout(() => typeStringInElement(element, str, charIndex + 1), typingSpeed);
-  } else {
-    cursor.style.visibility = "hidden";  
-    index++;
-    typingTextElement.insertBefore(document.createElement("br"), cursor);
-    setTimeout(() => {
-      cursor.style.visibility = "visible";  
-      typeContent();
-    }, typingSpeed);
-  }
-}
+    let index = 0;
+    const typingSpeed = 25;
+    const typingTextElement = document.getElementById("typing-text");
+    const cursor = document.getElementById("cursor");
 
-function showCodeSnippet() {
-  const codeContainer = document.getElementById("code-container");
-  codeContainer.style.display = "block";
-  setTimeout(() => {
-    codeContainer.style.opacity = "1";
-  }, 100); 
-}
+    function typeContent() {
+      if (index < content.length) {
+        const item = content[index++];
+        if (typeof item === "string") {
+          typeString(item, 0);
+        } else if (item.type === "link") {
+          const linkElement = document.createElement("a");
+          linkElement.href = item.href;
+          linkElement.className = "red-text";
+          linkElement.textContent = "";
+          typingTextElement.insertBefore(linkElement, cursor);
+          typeStringInElement(linkElement, item.text, 0);
+        } else if (item.type === "red") {
+          const spanElement = document.createElement("span");
+          spanElement.className = "red-text";
+          typingTextElement.insertBefore(spanElement, cursor);
+          typeStringInElement(spanElement, item.text, 0);
+        }
+      } else {
+        showCodeSnippet();
+      }
+    }
 
-function copyToClipboard(elementId) {
-  var codeElement = document.getElementById(elementId);
-  var text = codeElement.innerText || codeElement.textContent;
+    function typeString(str, i) {
+      if (i < str.length) {
+        typingTextElement.insertBefore(
+          document.createTextNode(str.charAt(i)),
+          cursor
+        );
+        setTimeout(() => typeString(str, i + 1), typingSpeed);
+      } else {
+        setTimeout(typeContent, typingSpeed);
+      }
+    }
 
-  navigator.clipboard.writeText(text).then(() => {
-      alert("Code copied to clipboard!");
-  }).catch(err => {
-      console.error("Failed to copy: ", err);
-  });
-}
+    function typeStringInElement(el, str, i) {
+      if (i < str.length) {
+        el.textContent += str.charAt(i);
+        setTimeout(() => typeStringInElement(el, str, i + 1), typingSpeed);
+      } else {
+        typingTextElement.insertBefore(document.createElement("br"), cursor);
+        setTimeout(typeContent, typingSpeed);
+      }
+    }
 
-window.onload = typeContent;
-</script>
+    function showCodeSnippet() {
+      const box = document.getElementById("code-container");
+      box.style.display = "block";
+      setTimeout(() => box.style.opacity = "1", 100);
+    }
 
+    function copyToClipboard(id) {
+      const txt = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(txt).then(_ => alert("Code copied!"));
+    }
+
+    window.onload = typeContent;
+  </script>
 </body>
 
 </html>
