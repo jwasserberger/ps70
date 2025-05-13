@@ -1,32 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <title>a keyboard, but better</title>
+  <meta charset="utf-8">
+  <title>a email-dedicated keyboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"> 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto Mono', monospace;
+      background-color: #000;
+      color: #fff;
+      padding: 20px;
+    }
+    a {
+      color: #f00;
+      text-decoration: none;
+    }
+    .typing-container {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .typing-container pre {
+      margin: 0;
+    }
+    .typing-container pre span#cursor {
+      border-right: 6px solid white;
+      animation: blink 0.7s steps(2) infinite;
+    }
+    @keyframes blink {
+      0%,100% { border-color: white; }
+      50%     { border-color: transparent; }
+    }
+  </style>
 </head>
-
-<body bgcolor=#000000>
-  
-  <div>
-    <pre>
-      <a href="https://jwasserberger.github.io/PS70/">back to home</a> 
-    </pre>
+<body>
+  <div class="typing-container">
+    <pre id="typing-text"><span id="cursor"></span></pre>
   </div>
 
-  <div>
-    <pre> /final project: the keyboard </pre>
-  </div>
+  <script>
+    const content = [
+      // back-to-home link
+      { type: "link", text: "back to home", href: "https://jlhansen9.github.io/PS70/" },
+      "\n\n",
+      // main title
+      { type: "red", text: "# /final project: the keyboard" },
+      "\n\n",
+      // table of contents
+      { type: "red", text: "# contents" },
+      "\n",
+      "1.    the final product\n",
+      "2.    circuitry\n",
+      "3.    housing\n",
+      "4.    coding\n",
+      "5.    next steps\n\n",
+      // Section 1
+      { type: "red", text: "# the final product" },
+      "\n",
+      "before i dive into my process of ideating, designing, building, coding, wiring, soldering, printing, cutting, and so on, here is the demo video for my final project.\n\n",
+      "[▶️ Watch demo video]\n",
+      "\n",
+      "As shown in the video, for my final project I built a device that solves one of the greatest challenges of modern mankind. Writing. Emails.\n\n",
+      "Over the last year I have written hundreds of mind-numbing emails, mainly cold outreach and follow-ups. 95% of each message is identical, so i made a device to automate that 95%.\n\n",
+      "[📷 fair_day_setup.png]\n\n",
+      // Section 2
+      { type: "red", text: "# circuitry" },
+      "\n",
+      "• ESP32-C3 dev board\n• 0.91\" 128×64 SSD1306 I2C OLED\n• breadboard & wires\n• 2 × 2-pin latching push-buttons\n\n",
+      "GPIO 2 → send button (INPUT_PULLUP)\nGPIO 15 → mode button (INPUT_PULLUP)\nSDA (OLED) → GPIO 21\nSCL (OLED) → GPIO 22\nVCC → 3V3   GND → GND\n\n",
+      "[📷 circuit_chain.png]\n",
+      "[📷 circuit_chain_back.png]\n",
+      "OLED sits under a custom 3D-printed screen cover for protection & style.\n\n",
+      // Section 3
+      { type: "red", text: "# housing" },
+      "\n",
+      "I wanted a chunky, retro feel—big enough to hold comfortably but not unwieldy.\n\n",
+      "We went through three Fusion iterations to refine sizing, button placement, and wire routing.\n\n",
+      "[📷 prototypes.png]\n",
+      "Final design adds a top-mounted button layout (more ergonomic than front-facing capacitive pads) and a hidden wiring slot.\n\n",
+      "[📷 front_panel_prototypes.png]\n\n",
+      // Section 4
+      { type: "red", text: "# coding" },
+      "\n",
+      "Typing logic is a mini state-machine: press send → load template → batch keystrokes via BLE → show progress on OLED → finish.\n\n",
+      "OLED logic uses an off-screen buffer; we clear, draw text or a progress bar, then display—no flicker.\n\n",
+      "[📄 View code in Arduino Web Editor]\n\n",
+      // Section 5
+      { type: "red", text: "# next steps" },
+      "\n",
+      "- Build a web UI to update the “Custom” block without re-flashing.\n",
+      "- Move from breadboard to protoboard and shrink footprint.\n",
+      "- Strengthen housing & wiring for real-world durability.\n",
+      "- Experiment with a rotary encoder instead of buttons for mode selection.\n\n",
+      { type: "red", text: "# thank you" },
+      "\n",
+      "Huge thanks to Nathan, Kassia & Bobby for all their help—especially Bobby for endless late-night soldering sessions!\n"
+    ];
 
+    let i = 0;
+    const speed = 25;
+    const elem = document.getElementById("typing-text");
+    const cursor = document.getElementById("cursor");
 
-<div>
-  <pre style="color:rgb(255, 0, 0)"> # contents </pre>
-  <pre style="color:rgb(255, 0, 0)"> # --------------------------------- </pre>
-  <pre style="color:rgb(255, 0, 0)">one.    <a href="#section1">the final product</a> </pre>
-  <pre style="color:rgb(255, 0, 0)">two.    <a href="#section2">circuitry</a>  </pre>
-  <pre style="color:rgb(255, 0, 0)">three.  <a href="#section3">housing</a>  </pre>
-  <pre style="color:rgb(255, 0, 0)">four.   <a href="#section4">coding</a> </pre>
-  <pre style="color:rgb(255, 0, 0)">five.   <a href="#section5">next steps</a> </pre>
-</div>
+    function typeNext() {
+      if (i >= content.length) return;
+      const item = content[i];
+      if (typeof item === "string") {
+        typeString(item, 0);
+      } else if (item.type === "link") {
+        const a = document.createElement("a");
+        a.href = item.href;
+        a.className = "red-text";
+        elem.insertBefore(a, cursor);
+        typeStringInElement(a, item.text, 0);
+      } else if (item.type === "red") {
+        const span = document.createElement("span");
+        span.style.color = "#f00";
+        elem.insertBefore(span, cursor);
+        typeStringInElement(span, item.text, 0);
+      }
+    }
+
+    function typeString(str, idx) {
+      if (idx < str.length) {
+        elem.insertBefore(document.createTextNode(str.charAt(idx)), cursor);
+        setTimeout(() => typeString(str, idx+1), speed);
+      } else {
+        i++;
+        setTimeout(typeNext, speed);
+      }
+    }
+
+    function typeStringInElement(el, str, idx) {
+      if (idx < str.length) {
+        el.textContent += str.charAt(idx);
+        setTimeout(() => typeStringInElement(el, str, idx+1), speed);
+      } else {
+        i++;
+        elem.insertBefore(document.createElement("br"), cursor);
+        setTimeout(typeNext, speed);
+      }
+    }
+
+    window.onload = typeNext;
+  </script>
+</body>
+</html>
