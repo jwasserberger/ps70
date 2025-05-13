@@ -33,6 +33,7 @@
       max-width: 800px;
       border: 2px solid #f00;
     }
+    #media-container,
     #code-container {
       display: none;
       opacity: 0;
@@ -49,13 +50,16 @@
 </head>
 <body>
   <div class="typing-container">
-    <!-- static image -->
+    <!-- static → stays above typing text -->
     <img
       src="week7/IMG_0653.png"
       alt="Old-School Loading Image"
       onerror="this.style.display='none'">
+    <pre id="typing-text"><span id="cursor"></span></pre>
+  </div>
 
-    <!-- O-Scope Test embed -->
+  <!-- this will hold your two YouTube embeds -->
+  <div id="media-container">
     <p class="red-text">O-Scope Test</p>
     <iframe
       src="https://www.youtube.com/embed/N4iprZ68EkA"
@@ -65,7 +69,6 @@
       allowfullscreen>
     </iframe>
 
-    <!-- MVP Test embed -->
     <p class="red-text">MVP Test</p>
     <iframe
       src="https://www.youtube.com/embed/SERgTkPLwu0"
@@ -74,11 +77,9 @@
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowfullscreen>
     </iframe>
-
-    <!-- typing area -->
-    <pre id="typing-text"><span id="cursor"></span></pre>
   </div>
 
+  <!-- your code snippet (still hidden until typing done) -->
   <div id="code-container">
     <pre id="code-snippet">
 // Create a BLE keyboard object with a custom device name and manufacturer.
@@ -116,8 +117,10 @@ void loop() {
     const content = [
       {type:"link", text:"back to home", href:"https://jwasserberger.github.io/ps70/"},
       "\n\n",
-      "/week seven: MVP + O-Scope",
+      "/week seven: microcontroller programming",
       "\n\n",
+      {type:"red", text:"# lights..."},
+      "\n",
       {type:"red", text:"----------------------------------------"},
       "\n\n",
       "given that i am making a keyboard, the first step was to make *drumroll please* a key!\n\n",
@@ -125,7 +128,7 @@ void loop() {
       "we now have proof that a keyboard *can* be built, so now it's just about expanding out this code to include full keyboard functionality, and then add a few keys for the pre-written components\n\n",
       "the next step will be to start printing keycaps and a keyboard housing shell and then structure the internals to fit within\n\n",
       "for the oscilloscope portion of the assignment, i measured the final keyboard on the scope and found that our device is operating on a roughly 13.5616ms clock\n\n",
-      "interestingly, the power seemed to fluctuate between 35–36kHz and 50–240Hz. see below:\n\n"
+      "interestingly, the power seemed to fluctuate between 35–36kHz and 50–240Hz. see the videos below:\n\n"
     ];
 
     let idx = 0,
@@ -134,12 +137,15 @@ void loop() {
         cursor = document.getElementById("cursor");
 
     function typeNext() {
-      if (idx >= content.length) return showCode();
+      if (idx >= content.length) {
+        revealMediaAndCode();
+        return;
+      }
       const item = content[idx++];
       if (typeof item === "string") {
         typeStr(item,0);
       } else if (item.type === "link") {
-        injectLink(item); 
+        injectLink(item);
       } else if (item.type === "red") {
         injectRed(item);
       }
@@ -181,10 +187,12 @@ void loop() {
       }
     }
 
-    function showCode() {
-      const kc = document.getElementById("code-container");
-      kc.style.display = "block";
-      setTimeout(()=>kc.style.opacity = "1", 100);
+    function revealMediaAndCode() {
+      const m = document.getElementById("media-container"),
+            c = document.getElementById("code-container");
+      m.style.display = "block";
+      c.style.display = "block";
+      setTimeout(()=>{ m.style.opacity = 1; c.style.opacity = 1; }, 100);
     }
 
     function copyToClipboard(id) {
