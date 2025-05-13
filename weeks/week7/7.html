@@ -16,6 +16,7 @@
       padding: 20px;
     }
     a { color: #f00; text-decoration: none; }
+    .red-text { color: #f00; }
     .typing-container { white-space: pre-wrap; word-wrap: break-word; }
     .typing-container pre { margin: 0; }
     .typing-container pre span#cursor {
@@ -26,7 +27,7 @@
       0%,100% { border-color: white; }
       50%     { border-color: transparent; }
     }
-    img, video {
+    img, iframe {
       display: block;
       margin: 20px auto;
       max-width: 800px;
@@ -48,21 +49,38 @@
 </head>
 <body>
   <div class="typing-container">
-    <!-- first static image -->
-    <img src="week7/IMG_0653.png" alt="Old-School Loading Image"
-         onerror="this.style.display='none'">
-    <!-- first video -->
-    <video src="week7/IMG_0654 copy.mp4" controls
-           onerror="console.warn('Video1 missing')"></video>
-    <!-- second video -->
-    <video src="week7/IMG_0892.MOV" controls
-           onerror="console.warn('Video2 missing')"></video>
+    <!-- static image -->
+    <img
+      src="week7/IMG_0653.png"
+      alt="Old-School Loading Image"
+      onerror="this.style.display='none'">
+
+    <!-- O-Scope Test embed -->
+    <p class="red-text">O-Scope Test</p>
+    <iframe
+      src="https://www.youtube.com/embed/N4iprZ68EkA"
+      title="O-Scope Test"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+
+    <!-- MVP Test embed -->
+    <p class="red-text">MVP Test</p>
+    <iframe
+      src="https://www.youtube.com/embed/SERgTkPLwu0"
+      title="MVP Test"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+
+    <!-- typing area -->
     <pre id="typing-text"><span id="cursor"></span></pre>
   </div>
 
   <div id="code-container">
     <pre id="code-snippet">
-<!-- Code Snippet Container (Hidden Initially) -->
 // Create a BLE keyboard object with a custom device name and manufacturer.
 BleKeyboard bleKeyboard("MonoKey", "Seeed", 100);
 
@@ -71,7 +89,7 @@ const int buttonPin = 32;
 
 void setup() {
   Serial.begin(115200);
-  pinMode(buttonPin, INPUT_PULLUP);  // Enable internal pull-up resistor
+  pinMode(buttonPin, INPUT_PULLUP);
 
   // Start BLE keyboard advertising
   bleKeyboard.begin();
@@ -79,21 +97,16 @@ void setup() {
 }
 
 void loop() {
-  // Only send keypresses if a central device is connected.
   if (bleKeyboard.isConnected()) {
-    // Check if the button is pressed (LOW means pressed with INPUT_PULLUP)
     if (digitalRead(buttonPin) == LOW) {
       Serial.println("pressing A");
       bleKeyboard.press('A');
       delay(50);
-      bleKeyboard.releaseAll();  // Release all keys after the press
-
-      // Debounce delay to avoid multiple triggers.
+      bleKeyboard.releaseAll();
       delay(300);
     }
   }
-  
-  delay(10);  // Small delay to allow background BLE tasks to run
+  delay(10);
 }
     </pre>
     <a href="#" onclick="copyToClipboard('code-snippet')">Copy Code</a>
@@ -117,59 +130,71 @@ void loop() {
       "interestingly, the power seemed to fluctuate between 35–36kHz and 50–240Hz. see below:\n\n"
     ];
 
-    let idx = 0, speed = 25;
-    const textEl = document.getElementById("typing-text"),
-          cursor = document.getElementById("cursor");
+    let idx = 0,
+        speed = 25,
+        textEl = document.getElementById("typing-text"),
+        cursor = document.getElementById("cursor");
 
     function typeNext() {
-      if (idx >= content.length) {
-        showCode(); return;
-      }
+      if (idx >= content.length) return showCode();
       const item = content[idx++];
       if (typeof item === "string") {
         typeStr(item,0);
       } else if (item.type === "link") {
-        const a=document.createElement("a");
-        a.href=item.href; a.textContent="";
-        textEl.insertBefore(a,cursor);
-        typeIn(a,item.text,0);
-      } else if (item.type==="red") {
-        const span=document.createElement("span");
-        span.style.color="#f00";
-        textEl.insertBefore(span,cursor);
-        typeIn(span,item.text,0);
+        injectLink(item); 
+      } else if (item.type === "red") {
+        injectRed(item);
       }
     }
 
     function typeStr(str,i) {
-      if(i<str.length){
-        textEl.insertBefore(document.createTextNode(str[i]),cursor);
-        setTimeout(()=>typeStr(str,i+1),speed);
-      } else setTimeout(typeNext,speed);
-    }
-
-    function typeIn(el,str,i){
-      if(i<str.length){
-        el.textContent+=str[i];
-        setTimeout(()=>typeIn(el,str,i+1),speed);
+      if (i < str.length) {
+        textEl.insertBefore(
+          document.createTextNode(str[i]), cursor
+        );
+        setTimeout(()=>typeStr(str,i+1), speed);
       } else {
-        textEl.insertBefore(document.createElement("br"),cursor);
-        setTimeout(typeNext,speed);
+        setTimeout(typeNext, speed);
       }
     }
 
-    function showCode(){
-      const kc=document.getElementById("code-container");
-      kc.style.display="block";
-      setTimeout(()=>kc.style.opacity="1",100);
+    function injectLink(item) {
+      let a = document.createElement("a");
+      a.href = item.href;
+      a.className = "red-text";
+      textEl.insertBefore(a, cursor);
+      typeInto(a, item.text);
     }
 
-    function copyToClipboard(id){
-      const txt=document.getElementById(id).innerText;
+    function injectRed(item) {
+      let span = document.createElement("span");
+      span.className = "red-text";
+      textEl.insertBefore(span, cursor);
+      typeInto(span, item.text);
+    }
+
+    function typeInto(el, str, i=0) {
+      if (i < str.length) {
+        el.textContent += str[i];
+        setTimeout(()=>typeInto(el, str, i+1), speed);
+      } else {
+        textEl.insertBefore(document.createElement("br"), cursor);
+        setTimeout(typeNext, speed);
+      }
+    }
+
+    function showCode() {
+      const kc = document.getElementById("code-container");
+      kc.style.display = "block";
+      setTimeout(()=>kc.style.opacity = "1", 100);
+    }
+
+    function copyToClipboard(id) {
+      const txt = document.getElementById(id).innerText;
       navigator.clipboard.writeText(txt).then(_=>alert("Copied!"));
     }
 
-    window.onload=typeNext;
+    window.onload = typeNext;
   </script>
 </body>
 </html>
