@@ -2,70 +2,120 @@
 <html lang="en">
 
 <head>
-  <title>week 9 of ps70 with jim</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"> 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+  <title>ps70 week nine: radio, wifi, et al</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Roboto Mono', monospace;
+      background-color: #000000;
+      color: white;
+      padding: 20px;
+    }
+
+    .typing-container pre span#cursor {
+      border-right: 6px solid white;
+      animation: blink 0.7s steps(2) infinite;
+    }
+
+    /* Blinking wide cursor animation */
+    @keyframes blink {
+      0% {
+        border-color: white;
+      }
+      50% {
+        border-color: transparent;
+      }
+      100% {
+        border-color: white;
+      }
+    }
+
+    a {
+      color: #ff0000;
+      text-decoration: none;
+    }
+
+    .red-text {
+      color: #ff0000;
+    }
+  </style>
 </head>
 
-<body bgcolor=#000000>
-  
-    <div>
-    <pre>
-<a href="https://jlhansen9.github.io/PS70/">back to home</a> 
-    </pre>
+<body>
+  <div class="typing-container">
+    <pre id="typing-text"><span id="cursor"></span></pre>
   </div>
+  <img src="images/box_fusion.png" alt = "The full box with the top holed panel visible as modeled in fusion">
 
-  <div>
-    <pre>
-/week 9: radio, wifi, bluetooth (IoT)
-    </pre>
-  </div>
+  <script>
+    // Content with fixes applied
+    const content = [
+      { type: "link", text: "back to home", href: "https://jwasserberger.github.io/ps70/" },
+      "\n\n",
+      "/week nine: radio, wifi, et al",
+      "\n\n",
+      { type: "red", text: "--------------------------------------------------------------------------------" },
+      "\n\n",
+      "please refer to Jacob's webpage here: https://jacobmandelbrot1.github.io/projects/9_project/ as he was my partner for this\n\n",    
+    ];
+    
+    let index = 0;
+    const typingSpeed = 25;
+    const typingTextElement = document.getElementById("typing-text");
+    const cursor = document.getElementById("cursor");
 
-  <p>
-    I teamed up with Jack Schwab for this week's assignment. We joined forces because our final projects were complimentary. Jack is working on a Hall Effect sensor to read rotations of a motor, like a crank. I'm working on audio and already had code for connecting to an online radio station. 
-  </p>
-  
-<p>
-  What do you get with a Hall Effect sensor and a radio station? A gramophone!
-</p>
+    function typeContent() {
+      if (index < content.length) {
+        const item = content[index];
 
-<p>
-  We wired a speaker and amplifier through a horn, placed a Hall Effect sensor on the bottom of a small board and had a crank with magnets attached that could be spun to pass the sensor. We had our ESP32 and a L9110 amplifier.
-</p>
+        if (typeof item === "string") {
+          typeString(item, 0);
+        } else if (item.type === "link") {
+          const linkElement = document.createElement("a");
+          linkElement.href = item.href;
+          linkElement.className = "red-text";
+          linkElement.textContent = ""; // Start with an empty link
+          typingTextElement.insertBefore(linkElement, cursor);
+          typeStringInElement(linkElement, item.text, 0);
+        } else if (item.type === "red") {
+          const spanElement = document.createElement("span");
+          spanElement.className = "red-text";
+          typingTextElement.insertBefore(spanElement, cursor);
+          typeStringInElement(spanElement, item.text, 0);
+        }
+      }
+    }
 
-<p>
-  <img src="week9/gramophone_1.png" width="500" alt="top view">
-  <img src="week9/gramophone_2.png" width="500" alt="side view">
-</p>
+    function typeString(str, charIndex) {
+      if (charIndex < str.length) {
+        typingTextElement.insertBefore(document.createTextNode(str.charAt(charIndex)), cursor);
+        setTimeout(() => typeString(str, charIndex + 1), typingSpeed);
+      } else {
+        index++;
+        setTimeout(typeContent, typingSpeed);
+      }
+    }
 
-<p>
-  Each rotation triggered audio to be played for a short duration of 1 second. We wanted to make you work hard for that music! You need to keep rotating the crank to play sound.
-</p>
+    function typeStringInElement(element, str, charIndex) {
+      if (charIndex < str.length) {
+        element.textContent += str.charAt(charIndex);
+        setTimeout(() => typeStringInElement(element, str, charIndex + 1), typingSpeed);
+      } else {
+        cursor.style.visibility = "hidden";  // Hide the cursor temporarily
+        index++;
+        typingTextElement.insertBefore(document.createElement("br"), cursor);
+        setTimeout(() => {
+          cursor.style.visibility = "visible";  // Restore the cursor for the next section
+          typeContent();
+        }, typingSpeed);
+      }
+    }
 
-<p>
-  <iframe src="https://app.arduino.cc/sketches/f6934960-4d0d-4007-b2a8-7f8a53ca82bb" style="height:510px;width:100%;margin:10px 0" frameborder=0></iframe>
-</p>
-
-<p>
-  <video width="500" controls>
-    <source src="week9/gramophone.mov">
-</video>
-</p>
-
-<p>
-  We ran out of time polishing off the housing but got everything working satisfactorily.
-</p>
-
-<p>
-  Some last thoughts, we tried using a Gramophone model from <a href="https://www.thingiverse.com/thing:2805415">Thingiverse</a> that looked really good but turned out to be really difficult to edit and work with. Was an STL but we needed more editable features. Would have been best to build our own model to our needs.
-</p>
-
-<a href="https://www.thingiverse.com/thing:2805415">Thingiverse</a>
-
-
+    window.onload = typeContent;
+  </script>
 </body>
-
-<link rel="stylesheet" href="../../style.css">
 
 </html>
