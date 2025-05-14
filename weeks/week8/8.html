@@ -1,102 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <title>week 8 of ps70 with jim</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"> 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>ps70 week 8: CNC + MOLDING</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap"
+    rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto Mono', monospace;
+      background-color: #000;
+      color: #fff;
+      padding: 20px;
+    }
+    a { color: #f00; text-decoration: none; }
+    .red-text { color: #f00; }
+    .typing-container { white-space: pre-wrap; word-wrap: break-word; }
+    .typing-container pre { margin: 0; }
+    .typing-container pre span#cursor {
+      border-right: 6px solid white;
+      animation: blink 0.7s steps(2) infinite;
+    }
+    @keyframes blink {
+      0%,100% { border-color: white; }
+      50%     { border-color: transparent; }
+    }
+    img, iframe {
+      display: block;
+      margin: 20px auto;
+      max-width: 800px;
+      border: 2px solid #f00;
+    }
+    #media-container,
+    #code-container {
+      display: none;
+      opacity: 0;
+      transition: opacity 1s ease-in;
+      margin-top: 20px;
+    }
+    #code-container pre {
+      background: #111;
+      padding: 10px;
+      border: 1px solid #444;
+      overflow-x: auto;
+    }
+  </style>
 </head>
-
-<body bgcolor=#000000>
-  
-    <div>
-    <pre>
-<a href="https://jlhansen9.github.io/PS70/">back to home</a> 
-    </pre>
+<body>
+  <div class="typing-container">
+    <!-- static → stays above typing text -->
+    <img
+      src="week7/IMG_0653.png"
+      alt="Old-School Loading Image"
+      onerror="this.style.display='none'">
+    <pre id="typing-text"><span id="cursor"></span></pre>
   </div>
 
-  <div>
-    <pre>
-/week 8: cnc milling, molding & casting
-    </pre>
-  </div>
-  
-  <div>
-    <pre style="color:gray">
-# designing and milling
-    </pre>
-    <pre style="color:gray">
-# ---------------------------------
-  </pre>
+  <!-- this will hold your two YouTube embeds -->
+  <div id="media-container">
+    <p class="red-text">O-Scope Test</p>
+    <iframe
+      src="https://www.youtube.com/embed/N4iprZ68EkA"
+      title="O-Scope Test"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
 
-<p>
-  For CNC this week, I got my idea from a instagram ceramicist called <a href="https://www.instagram.com/somthings2021/?hl=en">@somthings2021</a>. He makes really cool platters for different small food items. Using that, I wanted to make my own version in wood on the CNC to be used as a charcuterie board.
-</p>
-
-<p>
-  <img src="week8/somthings_inspo.png" width="500" alt="inspiration">
-</p>
-
-<p>
-  I tried to replicate the handmade imperfections of somthings2021 work in Fusion (which was surprisingly difficult) adding asymmetries and irregularities across different depths. A copy of the dxf is <a download href='week8/charcuterie.dxf'>here</a>.
-</p>
-
-<p>
-  <img src="week8/cnc_milling.png" width="500" alt="milling in progress">
-</p>
-
-<p>
-  The CNC did a wonderful job. The only issue was that I used plywood and it exposed some not so pleasant inner layers and the glue binding them. Not sure if its food safe...
-</p>
-
-<p>
-  <img src="week8/finished_charcuterie.png" width="500" alt="finished charcuterie">
-</p>
-
+    <p class="red-text">MVP Test</p>
+    <iframe
+      src="https://www.youtube.com/embed/SERgTkPLwu0"
+      title="MVP Test"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
   </div>
 
-
-  <div>
-    <pre style="color:gray">
-# molding and casting
+  <!-- your code snippet (still hidden until typing done) -->
+  <div id="code-container">
+    <pre id="code-snippet">
     </pre>
-    <pre style="color:gray">
-# ---------------------------------
-  </pre>
+    <a href="#" onclick="copyToClipboard('code-snippet')">Copy Code</a>
+  </div>
 
-<p>Moving onto molding I tried something food related again but this time using the bunny model <a href="https://jlhansen9.github.io/PS70/weeks/week5/5.html">from Week 5</a>! The goal was to create a unique ice cube to be had in a whiskey glass.</p>
+  <script>
+    const content = [
+      {type:"link", text:"back to home", href:"https://jwasserberger.github.io/ps70/"},
+      "\n\n",
+      "/week eight: CNC and Molding",
+      "\n\n",
+      {type:"red", text:"----------------------------------------"},
+      "\n\n",
+      "now that we have a key, we need a button! I wanted to make one of those soft buttons you might find on a soundboard or DaVinci BlackMagic board as I love how they feel to press.\n\n",
+      "i created a mold in fusion and then filled it with silicone rubber, with a 1:1 ratio of each bottle labeled "A" and "B" respectively in the lab (ended up being about 0.1oz per button\n\n",
+      "button mold file is downloadable below\n\n",
+      "for my CNC, i wanted a multilayered "sculpture" that took advantage of the CNC's precision capabilities. The attached DXF file is what I came up with, and after some post-processing, the attached image is the final result\n\n",
+    ];
 
-<p>I scaled the model, printed in 3d and then used food safe silicone to cast it. I hot glued "Ducky" the rabbit onto a small wooden slat, sprayed Ducky in lubricant, cut the top off a plastic cup, and then dunked Ducky into a cup full of silicone.</p>
+    let idx = 0,
+        speed = 25,
+        textEl = document.getElementById("typing-text"),
+        cursor = document.getElementById("cursor");
 
-<p>
-  <img src="week8/DuckyandCup.png" width="500" alt="Ducky and Cup">
-</p>
+    function typeNext() {
+      if (idx >= content.length) {
+        revealMediaAndCode();
+        return;
+      }
+      const item = content[idx++];
+      if (typeof item === "string") {
+        typeStr(item,0);
+      } else if (item.type === "link") {
+        injectLink(item);
+      } else if (item.type === "red") {
+        injectRed(item);
+      }
+    }
 
-<p>
-  <img src="week8/Ducky_in_Silicone.png" width="500" alt="Ducky and Cup">
-</p>
+    function typeStr(str,i) {
+      if (i < str.length) {
+        textEl.insertBefore(
+          document.createTextNode(str[i]), cursor
+        );
+        setTimeout(()=>typeStr(str,i+1), speed);
+      } else {
+        setTimeout(typeNext, speed);
+      }
+    }
 
-<p>
-  I let the mold sit about 24 hours. Removal was not easy, using an ice cream stick to separate the silicone from Ducky. It took a lot of force and I was very nervous about ripping the mold, particularly around the ears where there was an opening. However, once it was out it was done!
-</p>
+    function injectLink(item) {
+      let a = document.createElement("a");
+      a.href = item.href;
+      a.className = "red-text";
+      textEl.insertBefore(a, cursor);
+      typeInto(a, item.text);
+    }
 
+    function injectRed(item) {
+      let span = document.createElement("span");
+      span.className = "red-text";
+      textEl.insertBefore(span, cursor);
+      typeInto(span, item.text);
+    }
 
-<p>
-  I then took it home, cleaned the mold thoroughly, filled it with water and put in the freezer. And look what I got!
-</p>
+    function typeInto(el, str, i=0) {
+      if (i < str.length) {
+        el.textContent += str[i];
+        setTimeout(()=>typeInto(el, str, i+1), speed);
+      } else {
+        textEl.insertBefore(document.createElement("br"), cursor);
+        setTimeout(typeNext, speed);
+      }
+    }
 
-<p>
-  <img src="week8/Ice_Silicone_3DPrint_2.png" width="500" alt="Silicone, Ice and Ducky">
-</p>
+    function revealMediaAndCode() {
+      const m = document.getElementById("media-container"),
+            c = document.getElementById("code-container");
+      m.style.display = "block";
+      c.style.display = "block";
+      setTimeout(()=>{ m.style.opacity = 1; c.style.opacity = 1; }, 100);
+    }
 
-<p>
-  Was very pleased with how it turned out, however needs a few more rinses before it's food safe! To make removal easier, I do splash the mold with room temperature water and it pops right out.
-</p>
-</div>
+    function copyToClipboard(id) {
+      const txt = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(txt).then(_=>alert("Copied!"));
+    }
 
+    window.onload = typeNext;
+  </script>
 </body>
-
-<link rel="stylesheet" href="../../style.css">
-
 </html>
