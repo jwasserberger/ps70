@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>ps70 week 8: CNC + MOLDING</title>
@@ -46,42 +47,48 @@
       border: 1px solid #444;
       overflow-x: auto;
     }
+    /* file-link style */
+    .file-link {
+      display: block;
+      margin: 10px auto;
+      color: #ffaaaa;
+    }
   </style>
 </head>
+
 <body>
   <div class="typing-container">
     <!-- static → stays above typing text -->
     <img
-      src="week7/IMG_0653.png"
+      src="../week7/IMG_0653.png"
       alt="Old-School Loading Image"
       onerror="this.style.display='none'">
     <pre id="typing-text"><span id="cursor"></span></pre>
   </div>
 
-  <!-- this will hold your two YouTube embeds -->
+  <!-- this will hold your two YouTube embeds and file links -->
   <div id="media-container">
-    <p class="red-text">O-Scope Test</p>
-    <iframe
-      src="https://www.youtube.com/embed/N4iprZ68EkA"
-      title="O-Scope Test"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen>
-    </iframe>
+    <!-- new: embedded/downloadable files from weeks/week8 -->
+    <p class="red-text">Button Mold (3MF)</p>
+    <a class="file-link" href="Button%20Mold.3mf" download>Download Button Mold.3mf</a>
 
-    <p class="red-text">MVP Test</p>
-    <iframe
-      src="https://www.youtube.com/embed/SERgTkPLwu0"
-      title="MVP Test"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen>
-    </iframe>
+    <p class="red-text">IMG_0893</p>
+    <!-- try to preview if browser supports HEIC, otherwise offer download -->
+    <img src="IMG_0893.HEIC" alt="IMG_0893 photo" onerror="this.style.display='none'">
+    <a class="file-link" href="IMG_0893.HEIC" download>Download IMG_0893.HEIC</a>
+
+    <p class="red-text">IMG_0894</p>
+    <img src="IMG_0894.HEIC" alt="IMG_0894 photo" onerror="this.style.display='none'">
+    <a class="file-link" href="IMG_0894.HEIC" download>Download IMG_0894.HEIC</a>
+
+    <p class="red-text">Squares Design (DXF)</p>
+    <a class="file-link" href="Squares%20v1.dxf" download>Download Squares v1.dxf</a>
   </div>
 
   <!-- your code snippet (still hidden until typing done) -->
   <div id="code-container">
     <pre id="code-snippet">
+// your week-8 JS or Arduino code here...
     </pre>
     <a href="#" onclick="copyToClipboard('code-snippet')">Copy Code</a>
   </div>
@@ -95,9 +102,9 @@
       {type:"red", text:"----------------------------------------"},
       "\n\n",
       "now that we have a key, we need a button! I wanted to make one of those soft buttons you might find on a soundboard or DaVinci BlackMagic board as I love how they feel to press.\n\n",
-      "i created a mold in fusion and then filled it with silicone rubber, with a 1:1 ratio of each bottle labeled "A" and "B" respectively in the lab (ended up being about 0.1oz per button\n\n",
+      "i created a mold in fusion and then filled it with silicone rubber, with a 1:1 ratio of each bottle labeled \"A\" and \"B\" respectively in the lab (ended up being about 0.1oz per button).\n\n",
       "button mold file is downloadable below\n\n",
-      "for my CNC, i wanted a multilayered "sculpture" that took advantage of the CNC's precision capabilities. The attached DXF file is what I came up with, and after some post-processing, the attached image is the final result\n\n",
+      "for my CNC, i wanted a multilayered \"sculpture\" that took advantage of the CNC's precision capabilities. The attached DXF file is what I came up with, and after some post-processing, the attached image is the final result\n\n"
     ];
 
     let idx = 0,
