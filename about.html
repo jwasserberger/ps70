@@ -15,19 +15,25 @@
       padding: 20px;
     }
 
-    .typing-container pre span#cursor {
+    #typing-text {
+      white-space: pre-wrap;
+      font-family: 'Roboto Mono', monospace;
+    }
+
+    .typing-container span#cursor {
       border-right: 6px solid white;
       animation: blink 0.7s steps(2) infinite;
     }
 
-    /* Blinking wide cursor animation */
     @keyframes blink {
       0% {
         border-color: white;
       }
+
       50% {
         border-color: transparent;
       }
+
       100% {
         border-color: white;
       }
@@ -57,12 +63,12 @@
       animation: load-image 3s steps(10) forwards;
     }
 
-    /* Old-school image chunk loading effect */
     @keyframes load-image {
       0% {
         opacity: 0;
         clip-path: inset(100% 0 0 0);
       }
+
       100% {
         opacity: 1;
         clip-path: inset(0% 0 0 0);
@@ -73,7 +79,7 @@
 
 <body>
   <div class="typing-container">
-    <pre id="typing-text"><span id="cursor"></span></pre>
+    <div id="typing-text"><span id="cursor"></span></div>
     <div class="image-placeholder">
       <img src="images/skyline.jpg" alt="Old-School Loading Image">
     </div>
@@ -141,18 +147,23 @@
         element.textContent += str.charAt(charIndex);
         setTimeout(() => typeStringInElement(element, str, charIndex + 1), typingSpeed);
       } else {
-        // Temporarily hide cursor after red text sections, then restore it
-        cursor.style.visibility = "hidden";  // Hide the cursor
+        cursor.style.visibility = "hidden";
         index++;
         typingTextElement.insertBefore(document.createElement("br"), cursor);
         setTimeout(() => {
-          cursor.style.visibility = "visible";  // Restore cursor for the next section
+          cursor.style.visibility = "visible";
           typeContent();
         }, typingSpeed);
       }
     }
 
-    window.onload = typeContent;
+    window.onload = () => {
+      try {
+        typeContent();
+      } catch (e) {
+        console.error("Error during typing:", e);
+      }
+    };
   </script>
 </body>
 
