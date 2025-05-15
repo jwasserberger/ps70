@@ -50,15 +50,14 @@
 </head>
 <body>
   <div class="typing-container">
-    <!-- static → stays above typing text -->
+    <!-- fixed: load from same folder -->
     <img
       src="IMG_0653.png"
-      alt="Old-School Loading Image"
-      onerror="this.style.display='none'">
+      alt="Old-School Loading Image">
     <pre id="typing-text"><span id="cursor"></span></pre>
   </div>
 
-  <!-- this will hold your two YouTube embeds -->
+  <!-- hold your two YouTube embeds -->
   <div id="media-container">
     <p class="red-text">O-Scope Test</p>
     <iframe
@@ -79,7 +78,7 @@
     </iframe>
   </div>
 
-  <!-- your code snippet (still hidden until typing done) -->
+  <!-- code snippet (hidden until typing done) -->
   <div id="code-container">
     <pre id="code-snippet">
 // Create a BLE keyboard object with a custom device name and manufacturer.
@@ -151,9 +150,7 @@ void loop() {
 
     function typeStr(str,i) {
       if (i < str.length) {
-        textEl.insertBefore(
-          document.createTextNode(str[i]), cursor
-        );
+        textEl.insertBefore(document.createTextNode(str[i]), cursor);
         setTimeout(()=>typeStr(str,i+1), speed);
       } else {
         setTimeout(typeNext, speed);
