@@ -46,6 +46,9 @@
 
 <body>
   <div class="typing-container">
+    <!-- restore the <pre> so typing-text and cursor exist -->
+    <pre id="typing-text"><span id="cursor"></span></pre>
+
     <span class="red-text">IMG_0893</span>
     <img src="IMG_0893.jpg" alt="IMG_0893 photo" onerror="this.style.display='none'">
 
@@ -53,14 +56,10 @@
     <img src="IMG_0894.jpg" alt="IMG_0894 photo" onerror="this.style.display='none'">
 
     <span class="red-text">Squares Design (DXF)</span>
-    <a class="file-link" href="Squares v1.dxf" download>
-      Download Squares v1.dxf
-    </a>
+    <a class="file-link" href="Squares v1.dxf" download>Download Squares v1.dxf</a>
   
     <span class="red-text">Button Mold (3MF)</span>
-    <a class="file-link" href="Button Mold.3mf" download>
-      Download Button Mold.3mf
-    </a>
+    <a class="file-link" href="Button Mold.3mf" download>Download Button Mold.3mf</a>
   </div>
 
   <script>
@@ -86,7 +85,7 @@
       if (idx >= content.length) return;
       const item = content[idx++];
       if (typeof item === "string") {
-        typeStr(item,0);
+        typeStr(item, 0);
       } else if (item.type === "link") {
         injectLink(item);
       } else if (item.type === "red") {
@@ -94,17 +93,20 @@
       }
     }
 
-    function typeStr(str,i) {
+    function typeStr(str, i) {
       if (i < str.length) {
-        textEl.insertBefore(document.createTextNode(str[i]), cursor);
-        setTimeout(()=>typeStr(str,i+1), speed);
+        textEl.insertBefore(
+          document.createTextNode(str.charAt(i)),
+          cursor
+        );
+        setTimeout(() => typeStr(str, i + 1), speed);
       } else {
         setTimeout(typeNext, speed);
       }
     }
 
     function injectLink(item) {
-      let a = document.createElement("a");
+      const a = document.createElement("a");
       a.href = item.href;
       a.className = "red-text";
       textEl.insertBefore(a, cursor);
@@ -112,16 +114,16 @@
     }
 
     function injectRed(item) {
-      let span = document.createElement("span");
+      const span = document.createElement("span");
       span.className = "red-text";
       textEl.insertBefore(span, cursor);
       typeInto(span, item.text);
     }
 
-    function typeInto(el, str, i=0) {
+    function typeInto(el, str, i = 0) {
       if (i < str.length) {
-        el.textContent += str[i];
-        setTimeout(()=>typeInto(el, str, i+1), speed);
+        el.textContent += str.charAt(i);
+        setTimeout(() => typeInto(el, str, i + 1), speed);
       } else {
         textEl.insertBefore(document.createElement("br"), cursor);
         setTimeout(typeNext, speed);
