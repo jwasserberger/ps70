@@ -50,29 +50,12 @@
 
     .image-placeholder {
       display: none;
-      width: 800px;
-      background-color: #333;
-      overflow: hidden;
-      position: relative;
       margin-top: 20px;
     }
 
     img {
       width: 800px;
-      opacity: 0;
-      animation: load-image 3s steps(10) forwards;
-    }
-
-    @keyframes load-image {
-      0% {
-        opacity: 0;
-        clip-path: inset(100% 0 0 0);
-      }
-
-      100% {
-        opacity: 1;
-        clip-path: inset(0% 0 0 0);
-      }
+      display: block;
     }
   </style>
 </head>
@@ -81,7 +64,7 @@
   <div class="typing-container">
     <div id="typing-text"><span id="cursor"></span></div>
     <div class="image-placeholder">
-      <img src="images/skyline.jpg" alt="Old-School Loading Image">
+      <img src="images/skyline.jpg" alt="Favorite photo">
     </div>
   </div>
 
