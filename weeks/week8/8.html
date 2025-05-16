@@ -6,9 +6,7 @@
   <title>ps70 week 8: CNC + MOLDING</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Roboto Mono', monospace;
@@ -16,10 +14,22 @@
       color: #fff;
       padding: 20px;
     }
-    a { color: #f00; text-decoration: none; }
-    .red-text { color: #f00; margin-top: 1em; display: block; }
-    .typing-container { white-space: pre-wrap; word-wrap: break-word; }
-    .typing-container pre { margin: 0; }
+    a {
+      color: #f00;
+      text-decoration: none;
+    }
+    .red-text {
+      color: #f00;
+      margin-top: 1em;
+      display: block;
+    }
+    .typing-container {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .typing-container pre {
+      margin: 0;
+    }
     .typing-container pre span#cursor {
       border-right: 6px solid white;
       animation: blink 0.7s steps(2) infinite;
@@ -28,52 +38,27 @@
       0%,100% { border-color: white; }
       50%     { border-color: transparent; }
     }
-    img, iframe {
-      display: block;
-      margin: 20px auto;
-      max-width: 800px;
-      border: 2px solid #f00;
-    }
-    .file-link {
-      display: block;
-      margin: 0.5em auto;
-      color: #ffaaaa;
-      max-width: 800px;
-      text-align: center;
-    }
   </style>
 </head>
 
 <body>
   <div class="typing-container">
-    <!-- restore the <pre> so typing-text and cursor exist -->
     <pre id="typing-text"><span id="cursor"></span></pre>
-
-    <span class="red-text">IMG_0893</span>
-    <img src="IMG_0893.jpg" alt="IMG_0893 photo" onerror="this.style.display='none'">
-
-    <span class="red-text">IMG_0894</span>
-    <img src="IMG_0894.jpg" alt="IMG_0894 photo" onerror="this.style.display='none'">
-
-    <span class="red-text">Squares Design (DXF)</span>
-    <a class="file-link" href="Squares v1.dxf" download>Download Squares v1.dxf</a>
-  
-    <span class="red-text">Button Mold (3MF)</span>
-    <a class="file-link" href="Button Mold.3mf" download>Download Button Mold.3mf</a>
   </div>
 
   <script>
     const content = [
-      { type:"link", text:"back to home", href:"https://jwasserberger.github.io/ps70/" },
+      { type: "link", text: "back to home", href: "https://jwasserberger.github.io/ps70/" },
       "\n\n",
       "/week eight: CNC and Molding",
       "\n\n",
-      { type:"red", text:"----------------------------------------" },
+      { type: "red", text: "----------------------------------------" },
       "\n\n",
       "now that we have a key, we need a button! I wanted to make one of those soft buttons you might find on a soundboard or DaVinci BlackMagic board as I love how they feel to press.\n\n",
       "i created a mold in fusion and then filled it with silicone rubber, with a 1:1 ratio of each bottle labeled \"A\" and \"B\" respectively in the lab (ended up being about 0.1oz per button).\n\n",
       "button mold file is downloadable below\n\n",
-      "for my CNC, i wanted a multilayered \"sculpture\" that took advantage of the CNC's precision capabilities. The attached DXF file is what I came up with, and after some post-processing, the attached image is the final result\n\n"
+      "for my CNC, i wanted a multilayered \"sculpture\" that took advantage of the CNC's precision capabilities. The attached DXF file is what I came up with, and after some post-processing, the attached image is the final result\n\n",
+      { type: "link", text: "📂 View all project files and images", href: "https://www.dropbox.com/scl/fo/fmw6pcm0l30wp955cpik8/AIxRo-To3H6-yhGRJc6FmJs?rlkey=xt90k58qjcmj7mjkp74n971m1&st=yr5wlu2c&dl=0" }
     ];
 
     let idx = 0,
@@ -95,10 +80,7 @@
 
     function typeStr(str, i) {
       if (i < str.length) {
-        textEl.insertBefore(
-          document.createTextNode(str.charAt(i)),
-          cursor
-        );
+        textEl.insertBefore(document.createTextNode(str.charAt(i)), cursor);
         setTimeout(() => typeStr(str, i + 1), speed);
       } else {
         setTimeout(typeNext, speed);
@@ -109,6 +91,7 @@
       const a = document.createElement("a");
       a.href = item.href;
       a.className = "red-text";
+      a.target = "_blank";
       textEl.insertBefore(a, cursor);
       typeInto(a, item.text);
     }
@@ -133,4 +116,5 @@
     window.onload = typeNext;
   </script>
 </body>
+
 </html>
