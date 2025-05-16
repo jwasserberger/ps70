@@ -36,23 +36,6 @@
       color: #ff0000;
     }
 
-    /* fade-in animation for your LED image */
-    @keyframes load-image {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-
-    img {
-      width: 800px;
-      height: auto;
-      border: 2px solid red;
-      opacity: 0;
-      animation: load-image 1s ease-in forwards;
-      margin: 20px auto;
-      display: block;
-    }
-
-    /* Hide code snippet and button initially */
     #code-container {
       display: none;
       opacity: 0;
@@ -64,16 +47,10 @@
 
 <body>
   <div class="typing-container">
-    <!-- now loading from same folder -->
-    <img
-      id="ledImage"
-      src="weeks/week4/LED_DEMO.png"
-      alt="LED Demo"
-      onerror="handleImageError()">
     <pre id="typing-text"><span id="cursor"></span></pre>
   </div>
 
-  <!-- Code Snippet Container (hidden initially) -->
+  <!-- Code Snippet Container (shown after text finishes typing) -->
   <div id="code-container">
     <pre id="code-snippet">
 // My LED Potentiometer Code for XIAO ESP32C3
@@ -119,16 +96,11 @@ void loop() {
   delay(100);
 }
     </pre>
-    <a href="#" class="red-text" onclick="copyToClipboard('code-snippet')">Copy Code</a>
+    <a href="#" class="red-text" onclick="copyToClipboard('code-snippet')">Copy Code</a><br><br>
+    <a href="https://www.dropbox.com/scl/fo/400l1pb3fpahz5asrx5ki/AFVrOaUpWiIlHOwHzIHXBBA?rlkey=ftpeegjv18xepzlqn0p1cwflm&st=br80h356&dl=0" class="red-text" target="_blank">💡 View project files and images</a>
   </div>
 
   <script>
-    function handleImageError() {
-      console.error("Image not found! Check the path.");
-      alert("Error: LED_DEMO.png not found in this folder.");
-      document.getElementById("ledImage").style.display = "none";
-    }
-
     const content = [
       { type: "link", text: "back to home", href: "https://jwasserberger.github.io/ps70/" },
       "\n\n",
@@ -162,6 +134,7 @@ void loop() {
           const linkElement = document.createElement("a");
           linkElement.href = item.href;
           linkElement.className = "red-text";
+          linkElement.target = "_blank";
           linkElement.textContent = "";
           typingTextElement.insertBefore(linkElement, cursor);
           typeStringInElement(linkElement, item.text, 0);
