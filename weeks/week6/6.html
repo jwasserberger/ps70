@@ -1,43 +1,365 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <title>week 6 of ps70 with manas</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"> 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>ps70 week 7: MVP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap"
+    rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto Mono', monospace;
+      background-color: #000;
+      color: #fff;
+      padding: 20px;
+    }
+    a { color: #f00; text-decoration: none; }
+    .red-text { color: #f00; }
+    .typing-container { white-space: pre-wrap; word-wrap: break-word; }
+    .typing-container pre { margin: 0; }
+    .typing-container pre span#cursor {
+      border-right: 6px solid white;
+      animation: blink 0.7s steps(2) infinite;
+    }
+    @keyframes blink {
+      0%,100% { border-color: white; }
+      50%     { border-color: transparent; }
+    }
+    img, iframe {
+      display: block;
+      margin: 20px auto;
+      max-width: 800px;
+      border: 2px solid #f00;
+    }
+    #media-container,
+    #code-container {
+      display: none;
+      opacity: 0;
+      transition: opacity 1s ease-in;
+      margin-top: 20px;
+    }
+    #code-container pre {
+      background: #111;
+      padding: 10px;
+      border: 1px solid #444;
+      overflow-x: auto;
+    }
+  </style>
 </head>
+<body>
 
-<body bgcolor=#000000>
-  
-    <div>
-    <pre>
-<a href="https://jlhansen9.github.io/PS70/">back to home</a> 
+  <!-- code snippet (hidden until typing done) -->
+  <div id="code-container">
+    <pre id="code-snippet">
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include <BleKeyboard.h>
+
+// === OLED (SSD1306 I2C) Setup ===
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define OLED_RESET    -1  // not used
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+// === BLE Keyboard ===
+BleKeyboard bleKeyboard("CapKey", "YourName", 100);
+
+// === Mode Configuration ===
+enum Mode {
+  COLD_EMAIL = 0,
+  CALL_FOLLOWUP = 1,
+  CUSTOM = 2,
+  MODE_COUNT = 3
+};
+const char* modeNames[MODE_COUNT] = {
+  "Cold Email",
+  "Call Follow-Up",
+  "Custom"
+};
+
+// Pre-written text blocks for each mode
+const char* textBlocks[MODE_COUNT][3] = {
+  {
+    "I hope this email finds you well. I came across your company and was impressed by your work in the industry.",
+    "I'd love to schedule a quick call to discuss how our solutions might help address some of the challenges you're facing.",
+    "Looking forward to your response. Thank you for your time."
+  },
+  {
+    "Thank you for taking the time to speak with me today. I appreciate your insights and feedback on our discussion.",
+    "As promised, I've attached the information we discussed during our call. Please let me know if you have any questions.",
+    "I'll follow up next week to discuss next steps. Have a great day!"
+  },
+  {
+    "Custom text block 1 - You can customize this in the code.",
+    "Custom text block 2 - You can customize this in the code.",
+    "Custom text block 3 - You can customize this in the code."
+  }
+};
+
+// === Touch Key Config ===
+struct Key {
+  uint8_t       pin;
+  char          character;
+  unsigned long lastPressed;
+};
+const int numKeys = 4;
+Key keys[numKeys] = {
+  { 2,  'A', 0 },  // Text block 1
+  { 4,  'B', 0 },  // Text block 2
+  {13,  'C', 0 },  // Text block 3
+  {15,  'D', 0 }   // Mode switch
+};
+
+const int touchThreshold = 20;   // capacitive threshold
+const int debounceTime    = 300; // ms
+Mode currentMode = COLD_EMAIL;
+
+// Typing variables
+bool    isSendingText   = false;
+String  currentText     = "";
+int     currentPosition = 0;
+unsigned long nextTypeTime = 0;
+const int batchSize  = 5;
+const int batchPause = 40;
+
+// BLE connection monitoring
+unsigned long lastConnectionCheck = 0;
+bool         wasConnected         = false;
+unsigned long disconnectTime      = 0;
+const int    reconnectDelay       = 1000;
+
+void setup() {
+  Serial.begin(115200);
+
+  // OLED init
+  Wire.begin(21, 22);
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    Serial.println("SSD1306 init failed");
+    while (1);
+  }
+  display.clearDisplay();
+  display.setRotation(2);
+  display.setTextSize(2);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0,0);
+  display.println("Starting BLE...");
+  display.display();
+
+  // BLE init
+  bleKeyboard.begin();
+  Serial.println("BLE started, waiting for connection...");
+  updateModeDisplay();
+  delay(1000);
+}
+
+void loop() {
+  // --- BLE connection monitor ---
+  if (millis() - lastConnectionCheck > 500) {
+    bool isConn = bleKeyboard.isConnected();
+    if (isConn != wasConnected) {
+      wasConnected = isConn;
+      if (isConn) {
+        Serial.println("BLE Connected!");
+        updateModeDisplay();
+      } else {
+        Serial.println("BLE Disconnected");
+        disconnectTime = millis();
+        display.fillScreen(SSD1306_BLACK);
+        display.setTextSize(2);
+        display.setCursor(0,0);
+        display.println("BLE");
+        display.println("Disconnected");
+        display.display();
+        isSendingText = false;
+      }
+    }
+    lastConnectionCheck = millis();
+  }
+
+  // --- Sending text in batches ---
+  if (isSendingText && bleKeyboard.isConnected()) {
+    unsigned long now = millis();
+    if (now >= nextTypeTime) {
+      int cnt = 0;
+      while (currentPosition < currentText.length() && cnt < batchSize) {
+        bleKeyboard.write(currentText.charAt(currentPosition++));
+        cnt++;
+        delay(15);
+      }
+      int pct = (currentPosition * 100) / currentText.length();
+      updateSendingDisplay(pct);
+      if (currentPosition >= currentText.length()) {
+        isSendingText = false;
+        delay(300);
+        updateModeDisplay();
+      } else {
+        nextTypeTime = now + batchPause;
+      }
+    }
+  }
+  // --- Otherwise handle capacitive touches ---
+  else if (bleKeyboard.isConnected()) {
+    for (int i = 0; i < numKeys; i++) {
+      int val = touchRead(keys[i].pin);
+      if (val < touchThreshold && millis() - keys[i].lastPressed > debounceTime) {
+        keys[i].lastPressed = millis();
+        if (i == numKeys - 1) {
+          switchMode();
+        } else {
+          startSendingTextBlock(i);
+        }
+      }
+    }
+  }
+  // --- Reconnect logic ---
+  else if (!wasConnected && millis() - disconnectTime > reconnectDelay) {
+    display.fillScreen(SSD1306_BLACK);
+    display.setTextSize(1);
+    display.setCursor(0,0);
+    display.println("Reconnecting...");
+    display.display();
+    static int attempts = 0;
+    if (++attempts > 5) {
+      Serial.println("Restarting BLE");
+      bleKeyboard.end();
+      delay(500);
+      bleKeyboard.begin();
+      attempts = 0;
+    }
+    disconnectTime = millis();
+  }
+
+  delay(10);
+}
+
+void updateModeDisplay() {
+  display.fillScreen(SSD1306_BLACK);
+  display.setTextSize(2);
+  display.setCursor(0,0);
+  display.println(modeNames[currentMode]);
+  display.display();
+}
+
+void updateSendingDisplay(int pct) {
+  display.fillScreen(SSD1306_BLACK);
+  display.setTextSize(2);
+  display.setCursor(0,0);
+  display.println("Sending...");
+  display.drawRect(0,40,126,10,SSD1306_WHITE);
+  display.fillRect(1,41,(pct*124)/100,8,SSD1306_WHITE);
+  display.setTextSize(1);
+  display.setCursor(50,54);
+  display.print(pct);
+  display.print("%");
+  display.display();
+}
+
+void switchMode() {
+  currentMode = (Mode)((currentMode + 1) % MODE_COUNT);
+  updateModeDisplay();
+  Serial.printf("Mode: %s\n", modeNames[currentMode]);
+  delay(500);
+}
+
+void startSendingTextBlock(int idx) {
+  currentText     = textBlocks[currentMode][idx];
+  currentPosition = 0;
+  isSendingText   = true;
+  nextTypeTime    = millis() + 50;
+  updateSendingDisplay(0);
+  Serial.printf("Send block %d mode %s\n", idx, modeNames[currentMode]);
+}
     </pre>
+    <a href="#" onclick="copyToClipboard('code-snippet')">Copy Code</a>
   </div>
 
-  <div>
-    <pre>
-/week 6: electronic input devices
-    </pre>
-  </div>
+  <script>
+    const content = [
+      {type:"link", text:"back to home", href:"https://jwasserberger.github.io/ps70/"},
+      "\n\n",
+      "/week six: MVP and O-Scope",
+      "\n\n",
+      {type:"red", text:"----------------------------------------"},
+      "\n\n",
+      "we ended up switching to a capacitive sensor keyboard, and so it made sense to figure out what touch value the keyboard is actually registering\n\n",
+      "we call this "Touch Threshold" and prety easily determined that a simple square of copper with a piece of tape and a wire attached almost instananeously believes it is being touched \n\n",
+      "after looking at our serial plot panel in Arduino (which has since been tragically lost) and doing some trial and error, we determine that a Touch Threshold of anything above 30 makes it nearly impossible to effectively use this keyboard\n\n",
+      "likewise, a touch threshold below 15 makes the keyboard believe it's in use just from the tape and wire attached\n\n",
+      "so, we determined that a touch threshold of 20 made the most sense, and implemented it below\n\n",
+      "we used this threshold up until the final week where we switched back to buttons, but for a while this was incredibly successful!\n\n"
+    ];
 
-  <p> Using a basic arduino uno and a SPW2430 MEMS microphone, I followed <a href="https://nathanmelenbrink.github.io/ps70/06_input/index.html">this example</a> for creating an audio sensor. </p>
+    let idx = 0,
+        speed = 25,
+        textEl = document.getElementById("typing-text"),
+        cursor = document.getElementById("cursor");
 
-  <p>
-  <img src="week6/audio_sensing_circuit.png" width="500" alt="microphone and arduino uno">
-</p>
+    function typeNext() {
+      if (idx >= content.length) {
+        revealMediaAndCode();
+        return;
+      }
+      const item = content[idx++];
+      if (typeof item === "string") {
+        typeStr(item,0);
+      } else if (item.type === "link") {
+        injectLink(item);
+      } else if (item.type === "red") {
+        injectRed(item);
+      }
+    }
 
-  <p>
-  <iframe src="https://app.arduino.cc/sketches/baf1401e-1999-4d27-97eb-2c52c660d074" style="height:510px;width:60%;margin:10px 0" frameborder=0></iframe>
-</p>
-  
-<video width="500" controls>
-  <source src="week6/audio_sensing.mov">
-</video>
+    function typeStr(str,i) {
+      if (i < str.length) {
+        textEl.insertBefore(document.createTextNode(str[i]), cursor);
+        setTimeout(()=>typeStr(str,i+1), speed);
+      } else {
+        setTimeout(typeNext, speed);
+      }
+    }
 
+    function injectLink(item) {
+      let a = document.createElement("a");
+      a.href = item.href;
+      a.className = "red-text";
+      textEl.insertBefore(a, cursor);
+      typeInto(a, item.text);
+    }
+
+    function injectRed(item) {
+      let span = document.createElement("span");
+      span.className = "red-text";
+      textEl.insertBefore(span, cursor);
+      typeInto(span, item.text);
+    }
+
+    function typeInto(el, str, i=0) {
+      if (i < str.length) {
+        el.textContent += str[i];
+        setTimeout(()=>typeInto(el, str, i+1), speed);
+      } else {
+        textEl.insertBefore(document.createElement("br"), cursor);
+        setTimeout(typeNext, speed);
+      }
+    }
+
+    function revealMediaAndCode() {
+      const m = document.getElementById("media-container"),
+            c = document.getElementById("code-container");
+      m.style.display = "block";
+      c.style.display = "block";
+      setTimeout(()=>{ m.style.opacity = 1; c.style.opacity = 1; }, 100);
+    }
+
+    function copyToClipboard(id) {
+      const txt = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(txt).then(_=>alert("Copied!"));
+    }
+
+    window.onload = typeNext;
+  </script>
 </body>
-
-<link rel="stylesheet" href="../../style.css">
-
 </html>
