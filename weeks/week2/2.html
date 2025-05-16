@@ -20,7 +20,6 @@
       animation: blink 0.7s steps(2) infinite;
     }
 
-    /* Blinking wide cursor animation */
     @keyframes blink {
       0% {
         border-color: white;
@@ -48,16 +47,14 @@
   <div class="typing-container">
     <pre id="typing-text"><span id="cursor"></span></pre>
   </div>
-  <img src="weeks/week2/box_fusion (1).jpeg" alt = "The full box with the top holed panel visible as modeled in fusion">
 
   <script>
-    // Content with fixes applied
     const content = [
       { type: "link", text: "back to home", href: "https://jwasserberger.github.io/ps70/" },
       "\n\n",
       "/week one: making the box",
       "\n\n",
-      { type: "red", text: "# the fusion data..." },
+      { type: "red", text: "# the box..." },
       "\n",
       { type: "red", text: "--------------------------------------------------------------------------------" },
       "\n\n",
@@ -67,10 +64,10 @@
       "- easy way to open and close the box\n\n",
       "- easy way to drop small objects into the box\n\n\n",
       "there was some trickiness with the bottom of the box. as you can see, that does not use finger joints. in retrospect, i would've liked it to have but in its current form the box is secure and that's what a box should be\n\n",
-      "the box has some messiness on the bottom due to the fact that i could not cut out the base with the laser cutter, so it needed some manual cutting with an exacto knife"
-    
+      "the box has some messiness on the bottom due to the fact that i could not cut out the base with the laser cutter, so it needed some manual cutting with an exacto knife\n\n",
+      { type: "link", text: "📦 View box project files and images", href: "https://www.dropbox.com/scl/fo/a0sklw7965nsk6gupsi7s/ABTmvuHzNolF1uIuUsYJmz4?rlkey=74evxxuid716fhfb49qetp433&st=lsoim21j&dl=0" }
     ];
-    
+
     let index = 0;
     const typingSpeed = 25;
     const typingTextElement = document.getElementById("typing-text");
@@ -86,7 +83,8 @@
           const linkElement = document.createElement("a");
           linkElement.href = item.href;
           linkElement.className = "red-text";
-          linkElement.textContent = ""; // Start with an empty link
+          linkElement.target = "_blank";
+          linkElement.textContent = "";
           typingTextElement.insertBefore(linkElement, cursor);
           typeStringInElement(linkElement, item.text, 0);
         } else if (item.type === "red") {
@@ -113,11 +111,11 @@
         element.textContent += str.charAt(charIndex);
         setTimeout(() => typeStringInElement(element, str, charIndex + 1), typingSpeed);
       } else {
-        cursor.style.visibility = "hidden";  // Hide the cursor temporarily
+        cursor.style.visibility = "hidden";
         index++;
         typingTextElement.insertBefore(document.createElement("br"), cursor);
         setTimeout(() => {
-          cursor.style.visibility = "visible";  // Restore the cursor for the next section
+          cursor.style.visibility = "visible";
           typeContent();
         }, typingSpeed);
       }
